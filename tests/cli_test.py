@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import pytest
-import project.main as main
+import krait.main as main
 
 from click.testing import CliRunner
 
