@@ -11,11 +11,23 @@ setup(
         'src'
     ),
     package_dir={'': 'src'},
-    version='0.1a',
+    version='0.1a0',
     install_requires=[
         'click'
     ],
     entry_points={
-        'console_scripts': ['krait = krait.main:main']
+        'console_scripts': ['krait = krait.main:main'],
+        'krait.linters': [
+            'flake8 = krait.lib.linters:Flake8'
+        ],
+        'krait.type_checkers': [
+            'mypy = krait.lib.type_checkers:MyPy'
+        ],
+        'krait.test_frameworks': [
+            'pytest = krait.lib.test_frameworks:Pytest'
+        ],
+        'krait.automations': [
+            'gha = krait.lib.automations:GithubActions'
+        ],
     },
 )
