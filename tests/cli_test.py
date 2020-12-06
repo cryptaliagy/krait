@@ -6,7 +6,7 @@ from click.testing import CliRunner
 
 
 @pytest.mark.cli
-def test_cli():
+def test_cli_create():
     '''
     Tests that the actual CLI works as expected. As the project
     develops, new tests are likely to be required, such as passing
@@ -17,6 +17,18 @@ def test_cli():
     '''
 
     runner = CliRunner()
-    result = runner.invoke(main.main)
+    result = runner.invoke(main.create)
+
+    assert not result.exception
+
+
+@pytest.mark.cli
+def test_cli_set_default():
+    '''
+    Tests that the set-default user interactions work appropriately
+    '''
+
+    runner = CliRunner()
+    result = runner.invoke(main.set_default)
 
     assert not result.exception

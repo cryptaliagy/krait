@@ -5,25 +5,37 @@ import click
 @click.command()
 def create():
     '''
-    Ideally this function should be restricted to the logic
-    required to run the CLI. Any logic that would be
-    used to actually run the application should be extracted into
-    different functions, possibly in different files. Creating a lib.py
-    could be helpful for this case, or making more packages as appropriate.
-
-    Reducing how much code is actually added to this function will let the
-    testing of the CLI portion of the application be substantially easier to
-    write and understand.
+    Create a new python project with the specified options
     '''
     pass
 
 
-@click.group()
-def main():
+@click.command('set-default')
+def set_default():
+    '''
+    Set default options to use in `krait create`. These will be stored in
+    a global config file.
+    '''
     pass
 
 
-main.add_command(create)
+@click.command('help')
+def launch_help():
+    '''
+    Launches the specified help site
+    '''
+
+
+@click.group()
+@click.version_option()
+def main():  # pragma: no cover
+    pass
+
+
+# Adding commands to group
+main.add_command(create)  # pragma: no cover
+main.add_command(set_default)  # pragma: no cover
+main.add_command(launch_help)  # pragma: no cover
 
 if __name__ == '__main__':  # pragma: no cover
     main()
