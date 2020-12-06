@@ -3,7 +3,7 @@ import click
 
 
 @click.command()
-def main():
+def create():
     '''
     Ideally this function should be restricted to the logic
     required to run the CLI. Any logic that would be
@@ -17,6 +17,13 @@ def main():
     '''
     pass
 
+
+@click.group()
+def main():
+    pass
+
+
+main.add_command(create)
 
 if __name__ == '__main__':  # pragma: no cover
     main()
