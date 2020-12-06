@@ -4,6 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='krait',
+    description='A Python CLI tool to create new python projects.',
     author='Natalia Maximo',
     author_email='iam@natalia.dev',
     packages=find_packages(
