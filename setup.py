@@ -13,7 +13,7 @@ setup(
     package_dir={'': 'src'},
     version='0.1a0',
     install_requires=[
-        'click'
+        'click', 'jinja2'
     ],
     entry_points={
         'console_scripts': ['krait = krait.main:main'],
