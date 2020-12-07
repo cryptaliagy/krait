@@ -3,6 +3,7 @@ import pytest
 import krait.main as main
 
 from click.testing import CliRunner
+from pathlib import Path
 
 
 @pytest.mark.cli
@@ -17,9 +18,19 @@ def test_cli_create():
     '''
 
     runner = CliRunner()
-    result = runner.invoke(main.create)
-
-    assert not result.exception
+    with runner.isolated_filesystem() as fs:
+        result = runner.invoke(main.create, ['project'])
+        project_path = Path(f'{fs}/project')
+        assert not result.exception
+        assert project_path.exists()
+        assert (project_path / 'README.md').exists()
+        assert (project_path / 'setup.cfg').exists()
+        assert (project_path / 'setup.py').exists()
+        assert (project_path / 'src').exists()
+        assert (project_path / 'src/project').exists()
+        assert (project_path / 'src/project/__init__.py').exists()
+        assert (project_path / 'tests').exists()
+        assert (project_path / 'tests/__init__.py').exists()
 
 
 @pytest.mark.cli

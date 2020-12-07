@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 import click
-import krait.utils.plugins as plugin_utils
 import logging
+import pathlib
+import os
+
+import krait.utils.plugins as plugin_utils
+import krait.lib.renderers as rndr
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -39,11 +44,43 @@ automations = plugin_utils.load_plugins('krait.automations')
     type=click.Choice([*automations.keys(), 'none'], case_sensitive=False),
     help='Which automation system to use with the new project'
 )
-def create(linter, type_checker, automation, test_framework):
+@click.argument('project_name', required=False)
+def create(
+    linter: str,
+    type_checker: str,
+    automation: str,
+    test_framework: str,
+    project_name: str
+):
     '''
     Create a new python project with the specified options
     '''
-    pass
+    directories = rndr.DirectoryRenderer(*map(
+        lambda p: pathlib.Path(p),
+        [
+            f'{project_name}',
+            f'{project_name}/src',
+            f'{project_name}/src/{project_name}',
+            f'{project_name}/tests'
+        ]
+    ))
+
+    directories.create_all()
+
+    os.chdir(f'./{project_name}')
+
+    files = rndr.FileRenderer(*map(
+        lambda p: rndr.File(p),
+        [
+            'setup.py',
+            'setup.cfg',
+            'README.md',
+            f'src/{project_name}/__init__.py',
+            'tests/__init__.py'
+        ]
+    ))
+
+    files.write_all()
 
 
 @click.command('set-default')
