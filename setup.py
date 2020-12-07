@@ -11,6 +11,7 @@ setup(
         'src'
     ),
     package_dir={'': 'src'},
+    include_package_data=True,
     version='0.1a0',
     install_requires=[
         'click', 'jinja2'
