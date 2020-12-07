@@ -55,6 +55,7 @@ automations = plugin_utils.load_plugins('krait.automations')
 @click.option(
     '--cli',
     type=click.Choice([*cli_frameworks.keys()], case_sensitive=False),
+    default='click',
     help='Which CLI framework system to use with the new project'
 )
 @click.argument('project_name', required=False)
