@@ -2,15 +2,21 @@
 import click
 import logging
 import pathlib
-import os
 
 import krait.utils.plugins as plugin_utils
+import krait.lib.abc as abc
 import krait.lib.renderers as rndr
+
+from typing import (
+    cast,
+    Type,
+)
 
 
 logging.basicConfig(level=logging.INFO)
 
 
+cli_frameworks = plugin_utils.load_plugins('krait.cli_frameworks')
 linters = plugin_utils.load_plugins('krait.linters')
 type_checkers = plugin_utils.load_plugins('krait.type_checkers')
 test_frameworks = plugin_utils.load_plugins('krait.test_frameworks')
@@ -18,6 +24,8 @@ automations = plugin_utils.load_plugins('krait.automations')
 
 
 @click.command()
+@click.option('-n', '--name', help='Name of the author of the project')
+@click.option('-e', '--email', help='Email of the author of the project')
 @click.option(
     '-l',
     '--linter',
@@ -44,42 +52,59 @@ automations = plugin_utils.load_plugins('krait.automations')
     type=click.Choice([*automations.keys(), 'none'], case_sensitive=False),
     help='Which automation system to use with the new project'
 )
+@click.option(
+    '--cli',
+    type=click.Choice([*cli_frameworks.keys()], case_sensitive=False),
+    help='Which CLI framework system to use with the new project'
+)
 @click.argument('project_name', required=False)
 def create(
+    name: str,
+    email: str,
     linter: str,
     type_checker: str,
     automation: str,
     test_framework: str,
-    project_name: str
+    project_name: str,
+    cli: str,
 ):
     '''
     Create a new python project with the specified options
     '''
-    directories = rndr.DirectoryRenderer(*map(
-        lambda p: pathlib.Path(p),
-        [
-            f'{project_name}',
-            f'{project_name}/src',
-            f'{project_name}/src/{project_name}',
-            f'{project_name}/tests'
-        ]
-    ))
+    directories = rndr.DirectoryRenderer(
+        pathlib.Path(project_name),
+        *map(
+            lambda p: pathlib.Path(p),
+            [
+                'src',
+                f'src/{project_name}',
+                'tests'
+            ]
+        ))
 
-    directories.create_all()
-
-    os.chdir(f'./{project_name}')
-
-    files = rndr.FileRenderer(*map(
+    files = rndr.FileRenderer(directories.root, *map(
         lambda p: rndr.File(p),
         [
-            'setup.py',
             'setup.cfg',
-            'README.md',
             f'src/{project_name}/__init__.py',
             'tests/__init__.py'
         ]
     ))
 
+    cli_framework_class = cast(  # Cast to appropriate class type
+        Type[abc.AbstractCliFramework],
+        cli_frameworks.get(cli, None)
+    )
+
+    cli_framework = cli_framework_class(project_name, files, directories)
+    cli_framework.render_file()
+
+    readme_file = rndr.File('README.md', f'# {project_name}')
+    setup_script = rndr.SetupScript(project_name, name, email, cli_framework, None, None, None)
+
+    files.add_file(readme_file)
+    files.add_file(setup_script)
+    directories.create_all()
     files.write_all()
 
 

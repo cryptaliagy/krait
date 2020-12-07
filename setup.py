@@ -17,6 +17,9 @@ setup(
     ],
     entry_points={
         'console_scripts': ['krait = krait.main:main'],
+        'krait.cli_frameworks': [
+            'click = krait.lib.cli_frameworks:ClickFramework'
+        ],
         'krait.linters': [
             'flake8 = krait.lib.linters:Flake8'
         ],

@@ -7,4 +7,4 @@ import krait.lib.abc as abc
 
 
 class Pytest(abc.AbstractTestFramework):
-    pass
+    packages = ['pytest', 'pytest-cov']

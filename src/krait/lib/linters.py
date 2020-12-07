@@ -7,4 +7,4 @@ import krait.lib.abc as abc
 
 
 class Flake8(abc.AbstractLinter):
-    pass
+    packages = ['flake8']

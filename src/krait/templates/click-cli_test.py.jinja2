@@ -1,0 +1,13 @@
+import pytest
+import {{ project_name }}.main as main
+
+from click import CliRunner
+
+
+@pytest.mark.cli
+def test_cli():
+    runner = CliRunner()
+
+    result = runner.invoke(main.main)
+
+    assert not result.exception

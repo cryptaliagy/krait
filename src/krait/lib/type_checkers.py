@@ -7,4 +7,4 @@ import krait.lib.abc as abc
 
 
 class MyPy(abc.AbstractTypeChecker):
-    pass
+    packages = ['mypy']

@@ -1,0 +1,16 @@
+from setuptools import setup, find_packages
+
+
+setup(
+    name='{{ project_name }}',
+    author='{{ author }}',
+    author_email='{{ author_email }}',
+    packages=find_packages('src'),
+    package_dir={'': 'src'},
+    version='0.1',
+    install_requires={{ install_dependencies }},
+    tests_require={{ test_dependencies }},
+    entry_points={
+        'console_scripts': ['{{project_name}} = {{ project_name }}.main:main']
+    },
+)

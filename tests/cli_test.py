@@ -19,13 +19,13 @@ def test_cli_create():
 
     runner = CliRunner()
     with runner.isolated_filesystem() as fs:
-        result = runner.invoke(main.create, ['project'])
+        result = runner.invoke(main.create, ['--cli', 'click', 'project'])
         project_path = Path(f'{fs}/project')
         assert not result.exception
         assert project_path.exists()
         assert (project_path / 'README.md').exists()
         assert (project_path / 'setup.cfg').exists()
-        assert (project_path / 'setup.py').exists()
+        # assert (project_path / 'setup.py').exists()
         assert (project_path / 'src').exists()
         assert (project_path / 'src/project').exists()
         assert (project_path / 'src/project/__init__.py').exists()
