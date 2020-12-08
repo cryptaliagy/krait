@@ -1,0 +1,32 @@
+name: build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.6', '3.7', '3.8', '3.9']
+    name: Testing {{ project_name }} with python {% raw -%} ${{ matrix.python }} {%- endraw %}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: {% raw -%} ${{ matrix.python }} {%- endraw %}
+
+      - name: Install dependencies and script
+        run: pip install .[tests]
+      {% if linter == 'flake8' %}
+      - name: Lint with flake8
+        run: flake8
+      {%- endif %}
+      {% if type_checker == 'mypy' %}
+      - name: Run static type analyzer
+        run: mypy
+      {%- endif %}
+      {% if test_framework == 'pytest' %}
+      - name: Test with pytest
+        run: pytest tests/
+      {%- endif %}

@@ -155,7 +155,7 @@ def create(
     directories = rndr.DirectoryRenderer(root)
     files = rndr.FileRenderer(root)
 
-    automation = automations[aut](project_name, files, directories)
+    automation = automations[aut](project_name, files, directories, lnt, tc, tf)
     cli_framework = cli_frameworks[cli](project_name, files, directories)
     test_framework = test_frameworks[tf](project_name, cli_framework.name, files, directories)
     linter = linters[lnt](project_name, files, directories)

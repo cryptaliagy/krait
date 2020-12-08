@@ -33,7 +33,7 @@ def load_plugins(plugin_type: str) -> Dict[str, abc.AbstractPlugin]:
 
 def get_plugin_defaults() -> Dict[str, str]:
     defaults = {
-        'aut': 'none',
+        'aut': 'gha',
         'lnt': 'flake8',
         'tc': 'mypy',
         'cli': 'click',
