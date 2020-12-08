@@ -18,9 +18,9 @@ setup(
     ),
     package_dir={'': 'src'},
     include_package_data=True,
-    version='0.1a4',
+    version='0.2',
     install_requires=[
-        'click', 'jinja2'
+        'click', 'jinja2',
     ],
     python_requires='>=3.6',
     keywords='cli project startup',

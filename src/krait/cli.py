@@ -11,6 +11,8 @@ import krait.lib.plugins.help_links as khelp
 import krait.lib.renderers as rndr
 import krait.main as main
 
+import krait.utils.update as update_utils
+
 from typing import (
     cast,
     Type,
@@ -206,12 +208,25 @@ def launch_help(link):
 
 @click.group()
 @click.version_option()
-def cli():  # pragma: no cover
+@click.option(
+    '--no-update',
+    is_flag=True,
+    help='Prevent checking for updates. '
+    'Can be set with env var KRAIT_NO_UPDATE_CHECK'
+)
+def cli(no_update: bool):  # pragma: no cover
     '''
     Krait is a CLI to help start up new python application. To get
     information on specific subcommands, use `krait [COMMAND] --help`.
     '''
-    pass
+    if not no_update and update_utils.should_check_update():
+        update_ver = update_utils.check_for_update()
+        if update_ver:
+            click.secho(
+                'A new version of krait is available!\n'
+                f'Install v{update_ver} by running `pip install --upgrade krait`',
+                fg='yellow'
+            )
 
 
 # Adding commands to group
