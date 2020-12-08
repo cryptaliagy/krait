@@ -2,17 +2,23 @@
 from setuptools import setup, find_packages
 
 
+with open('README.md', 'r') as f:
+    long_description = f.read()
+
 setup(
     name='krait',
     description='A Python CLI tool to create new python projects.',
     author='Natalia Maximo',
     author_email='iam@natalia.dev',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    url='https://github.com/taliamax/krait',
     packages=find_packages(
         'src'
     ),
     package_dir={'': 'src'},
     include_package_data=True,
-    version='0.1a3',
+    version='0.1a4',
     install_requires=[
         'click', 'jinja2'
     ],

@@ -1,11 +1,29 @@
 # Krait – CLI for setting up new python projects
 
-![Build status badge](https://img.shields.io/github/workflow/status/taliamax/krait/build)
+[![Build status badge](https://img.shields.io/github/workflow/status/taliamax/krait/build)](https://github.com/taliamax/krait/actions?query=workflow%3Abuild)
+[![PyPI version badge](https://img.shields.io/pypi/v/krait)](https://pypi.org/project/krait/)
+[![PyPI Status Badge](https://img.shields.io/pypi/status/krait)](https://pypi.org/project/krait/)
+[![Python versions badge](https://img.shields.io/pypi/pyversions/krait)](https://github.com/taliamax/krait)
+
+Welcome to Krait!
+
+Krait is a python-built CLI for new python projects! Working on new code usually means setting up linters, type checkers, testing frameworks, and/or automations, but how often do those things get worked on?
+
+I made Krait to solve the issue of starting up new python CLIs rapidly while ensuring that code quality is high. By baking these tools into the project creation process, you can find mistakes and issues early on and save time debugging.
+
+Krait is currently in Alpha, and new features are still being worked on. A few of the features coming soon:
+
+- Git integration, allowing new projects to already be initialized repositories
+- Customizeable defaults, including saving preferred name and email to be used by new projects
+- Pre-commit hooks
+
+Documentation is also being worked on to explain the process of extending Krait by writing your own plugins. This would allow external packages to enhance the number of options permitted for each of the tools that we support
 
 
-## Extra documentation
-The following links might be helpful:
-- [Click Quickstart](https://click.palletsprojects.com/en/7.x/quickstart/)
-- [Pytest docs](https://docs.pytest.org/en/stable/contents.html)
-- [Pytest fixtures](https://docs.pytest.org/en/stable/fixture.html)
-- [Parametrizing tests](https://docs.pytest.org/en/stable/example/parametrize.html)
+## Installation
+
+Simplest installation is through pip.
+
+```bash
+$ pip install krait
+```
