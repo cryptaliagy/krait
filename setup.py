@@ -17,21 +17,26 @@ setup(
         'click', 'jinja2'
     ],
     entry_points={
-        'console_scripts': ['krait = krait.main:main'],
+        'console_scripts': ['krait = krait.cli:cli'],
         'krait.cli_frameworks': [
-            'click = krait.lib.cli_frameworks:ClickFramework'
+            'click = krait.lib.plugins.cli_frameworks:ClickFramework',
+            'none = krait.lib.plugins.cli_frameworks:NoCliFramework',
         ],
         'krait.linters': [
-            'flake8 = krait.lib.linters:Flake8'
+            'flake8 = krait.lib.plugins.linters:Flake8',
+            'none = krait.lib.plugins.linters:NoLinter',
         ],
         'krait.type_checkers': [
-            'mypy = krait.lib.type_checkers:MyPy'
+            'mypy = krait.lib.plugins.type_checkers:MyPy',
+            'none = krait.lib.plugins.type_checkers:NoTypeChecker',
         ],
         'krait.test_frameworks': [
-            'pytest = krait.lib.test_frameworks:Pytest'
+            'pytest = krait.lib.plugins.test_frameworks:Pytest',
+            'none = krait.lib.plugins.test_frameworks:NoTesting',
         ],
         'krait.automations': [
-            'gha = krait.lib.automations:GithubActions'
+            'gha = krait.lib.plugins.automations:GithubActions',
+            'none = krait.lib.plugins.automations:NoAutomation'
         ],
     },
 )

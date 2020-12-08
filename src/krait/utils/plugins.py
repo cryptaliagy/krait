@@ -8,7 +8,9 @@ import logging
 
 import krait.lib.abc as abc
 
-from typing import Dict
+from typing import (
+    Dict,
+)
 
 
 def load_plugins(plugin_type: str) -> Dict[str, abc.AbstractPlugin]:
@@ -27,3 +29,15 @@ def load_plugins(plugin_type: str) -> Dict[str, abc.AbstractPlugin]:
             )
 
     return plugins
+
+
+def get_plugin_defaults() -> Dict[str, str]:
+    defaults = {
+        'aut': 'none',
+        'lnt': 'none',
+        'tc': 'none',
+        'cli': 'click',
+        'tf': 'pytest',
+    }
+
+    return defaults

@@ -5,11 +5,15 @@ setup(
     name='{{ project_name }}',
     author='{{ author }}',
     author_email='{{ author_email }}',
+    version='0.1',
     packages=find_packages('src'),
     package_dir={'': 'src'},
-    version='0.1',
+    include_package_data=True,
     install_requires={{ install_dependencies }},
     tests_require={{ test_dependencies }},
+    extras_require={
+        'tests': {{ test_dependencies }},
+    }
     entry_points={
         'console_scripts': ['{{project_name}} = {{ project_name }}.main:main']
     },

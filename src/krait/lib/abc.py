@@ -4,17 +4,11 @@ Abstract base classes for Krait
 '''
 
 from typing import (
-    Dict,
     List,
+    Union,
+    Optional,
 )
 from pathlib import Path
-
-
-class AbstractPlugin:
-    project_name: str
-
-    def __init__(self, project_name: str):
-        self.project_name = project_name
 
 
 class AbstractObjectRenderer:
@@ -24,12 +18,23 @@ class AbstractObjectRenderer:
         self.root = root
 
 
-class AbstractFileRenderer(AbstractObjectRenderer):
-    def add_file(self, file):
+class AbstractFile:
+    path: Union[str, Path]
+    _contents: List[str]
+
+    def add_content(self, content: str):
         raise NotImplementedError()
 
     @property
     def contents(self) -> str:
+        raise NotImplementedError()
+
+
+class AbstractFileRenderer(AbstractObjectRenderer):
+    def add_file(self, file: AbstractFile):
+        raise NotImplementedError()
+
+    def write_all(self):
         raise NotImplementedError()
 
 
@@ -38,12 +43,8 @@ class AbstractDirectoryRenderer(AbstractObjectRenderer):
         raise NotImplementedError
 
 
-class AbstractVCS(AbstractPlugin):
-    pass
-
-
-class AbstractPythonPlugin(AbstractPlugin):
-    packages: List[str]
+class AbstractPlugin:
+    project_name: str
     file_renderer: AbstractFileRenderer
     dir_renderer: AbstractDirectoryRenderer
 
@@ -53,32 +54,21 @@ class AbstractPythonPlugin(AbstractPlugin):
         file_renderer: AbstractFileRenderer,
         dir_renderer: AbstractDirectoryRenderer,
     ):
-        super().__init__(project_name)
+        self.project_name = project_name
         self.file_renderer = file_renderer
         self.dir_renderer = dir_renderer
 
-
-class AbstractCliFramework(AbstractPythonPlugin):
-    def render_file(self) -> None:
-        '''
-        Render the main.py file and inserts it into the file renderer
-        '''
+    def render_file(self):
         raise NotImplementedError()
 
 
-class AbstractLinter(AbstractPythonPlugin):
-    configurations: Dict[str, str]
-
-
-class AbstractTypeChecker(AbstractPythonPlugin):
+class AbstractVCS(AbstractPlugin):
     pass
 
 
-class AbstractTestFramework(AbstractPythonPlugin):
-    pass
+class AbstractPythonPlugin(AbstractPlugin):
+    packages: List[str]
 
-
-class AbstractAutomation(AbstractPythonPlugin):
-    linter: str
-    type_checker: str
-    test_framework: str
+    @property
+    def setup_config(self) -> Optional[str]:
+        raise NotImplementedError()
