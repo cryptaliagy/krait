@@ -12,10 +12,12 @@ setup(
     ),
     package_dir={'': 'src'},
     include_package_data=True,
-    version='0.1a0',
+    version='0.1a2',
     install_requires=[
         'click', 'jinja2'
     ],
+    python_requires='>=3.6',
+    keywords='cli project startup',
     entry_points={
         'console_scripts': ['krait = krait.cli:cli'],
         'krait.cli_frameworks': [
@@ -42,4 +44,17 @@ setup(
             'krait = krait.lib.plugins.help_links:KraitHelpLinks',
         ]
     },
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Environment :: Console',
+        'Intended Audience :: Developers',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Topic :: Utilities',
+        'Typing :: Typed',
+    ],
 )
