@@ -24,6 +24,7 @@ class BasePythonPlugin(abc.AbstractPythonPlugin):
     setup_vars: Dict[str, str]
     _setup_config: Optional[str]
     file_location: Optional[str]
+    rendering_params: Dict[str, str]
 
     def __init__(
         self,
@@ -36,13 +37,15 @@ class BasePythonPlugin(abc.AbstractPythonPlugin):
         self._setup_config = None
         self.setup_name = None
         self.file_location = None
+        self.rendering_params = {}
 
     def render_file(self):
         if self.file_location:
             self.main_file = kf.File(f'{self.file_location}/{self.file_name}')
         else:
             self.main_file = kf.File(f'src/{self.project_name}/{self.file_name}')
-        self.rendered_file = env.get_template(f'{self.name}-{self.file_name}.jinja2').render()
+        self.rendered_file = \
+            env.get_template(f'{self.name}-{self.file_name}.jinja2').render(**self.rendering_params)
         self.main_file.add_content(self.rendered_file)
         self.main_file.add_content('')  # Newline at end of file
         self.file_renderer.add_file(self.main_file)

@@ -27,6 +27,7 @@ class BaseTestFramework(bp.BasePythonPlugin):
         super().__init__(project_name, file_renderer, dir_renderer)
         self.cli_framework = cli_framework
         self.name = ''
+        self.rendering_params = {'project_name': project_name}
 
 
 class Pytest(BaseTestFramework):
