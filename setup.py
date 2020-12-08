@@ -12,7 +12,7 @@ setup(
     ),
     package_dir={'': 'src'},
     include_package_data=True,
-    version='0.1a2',
+    version='0.1a3',
     install_requires=[
         'click', 'jinja2'
     ],
