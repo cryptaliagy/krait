@@ -44,7 +44,7 @@ class BasePythonPlugin(abc.AbstractPythonPlugin):
         if self.file_location:
             self.main_file = kf.File(f'{self.file_location}/{self.file_name}')
         else:
-            self.main_file = kf.File(f'src/{self.project_name}/{self.file_name}')
+            self.main_file = kf.File(f'src/{self.project_name.replace("-","_")}/{self.file_name}')
         self.rendered_file = \
             env.get_template(f'{self.name}-{self.file_name}.jinja2').render(**self.rendering_params)
         self.main_file.add_content(self.rendered_file)

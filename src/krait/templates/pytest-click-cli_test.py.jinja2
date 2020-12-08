@@ -1,5 +1,5 @@
 import pytest
-import {{ project_name }}.main as main
+import {{ project_name|replace('-','_') }}.main as main
 
 from click.testing import CliRunner
 

@@ -34,7 +34,7 @@ def create(
             lambda p: pathlib.Path(p),
             [
                 'src',
-                f'src/{project_name}',
+                f'src/{project_name.replace("-","_")}',
                 'tests'
             ]
         )
@@ -44,7 +44,7 @@ def create(
         lambda p: kf.File(p),
         [
             'setup.cfg',
-            f'src/{project_name}/__init__.py',
+            f'src/{project_name.replace("-","_")}/__init__.py',
             'tests/__init__.py'
         ]
     ))

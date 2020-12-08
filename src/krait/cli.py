@@ -74,7 +74,7 @@ def fail_if_suppress(ctx, param, val):
             f'{param.name} must be specified when using --suppress-interactive'
         )
     if val is None:
-        param.prompt = param.name.capitalize()
+        param.prompt = param.name.replace('_', ' ').capitalize()
         return param.prompt_for_value(ctx)
     return val
 
@@ -94,7 +94,8 @@ def setup_prompt(ctx, param, val):
 @click.command()
 @click.option(
     '-n',
-    '--name',
+    '--author-name',
+    'author_name',
     callback=fail_if_suppress,
     help='Name of the author of the project'
 )
@@ -152,7 +153,7 @@ def setup_prompt(ctx, param, val):
 )
 @click.argument('project_name', required=False, callback=setup_prompt)
 def create(
-    name: str,
+    author_name: str,
     email: str,
     lnt: str,
     tc: str,
@@ -177,7 +178,7 @@ def create(
 
     main.create(
         project_name=project_name,
-        author=name,
+        author=author_name,
         email=email,
         cli_framework=cli_framework,
         linter=linter,
@@ -194,7 +195,7 @@ def set_default():
     pass
 
 
-@click.command('help')
+@click.command('link')
 @click.argument('link', type=click.Choice(help_links.keys()))
 def launch_help(link):
     '''
@@ -206,6 +207,10 @@ def launch_help(link):
 @click.group()
 @click.version_option()
 def cli():  # pragma: no cover
+    '''
+    Krait is a CLI to help start up new python application. To get
+    information on specific subcommands, use `krait [COMMAND] --help`.
+    '''
     pass
 
 
