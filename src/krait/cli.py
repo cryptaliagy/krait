@@ -211,7 +211,7 @@ def cli():  # pragma: no cover
 
 # Adding commands to group
 cli.add_command(create)  # pragma: no cover
-cli.add_command(set_default)  # pragma: no cover
+# cli.add_command(set_default)  # pragma: no cover
 cli.add_command(launch_help)  # pragma: no cover
 
 if __name__ == '__main__':  # pragma: no cover
