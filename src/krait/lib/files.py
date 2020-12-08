@@ -84,7 +84,8 @@ class SetupConfig(File):
         result = []
 
         for plugin in self.plugins:
-            if plugin.setup_config:
-                result.append(plugin.setup_config)
+            config = plugin.setup_config()
+            if config:
+                result.append(config)
 
         return '\n'.join(result)

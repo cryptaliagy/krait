@@ -69,6 +69,5 @@ class AbstractVCS(AbstractPlugin):
 class AbstractPythonPlugin(AbstractPlugin):
     packages: List[str]
 
-    @property
     def setup_config(self) -> Optional[str]:
         raise NotImplementedError()

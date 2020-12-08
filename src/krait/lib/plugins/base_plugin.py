@@ -38,6 +38,7 @@ class BasePythonPlugin(abc.AbstractPythonPlugin):
         self.setup_name = None
         self.file_location = None
         self.rendering_params = {}
+        self.setup_vars = {}
 
     def render_file(self):
         if self.file_location:
@@ -50,7 +51,6 @@ class BasePythonPlugin(abc.AbstractPythonPlugin):
         self.main_file.add_content('')  # Newline at end of file
         self.file_renderer.add_file(self.main_file)
 
-    @property
     def setup_config(self) -> Optional[str]:
         if self.setup_name is None:
             return None
