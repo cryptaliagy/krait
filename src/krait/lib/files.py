@@ -4,6 +4,7 @@ import krait.lib.abc as abc
 from typing import (
     Union,
     List,
+    Set
 )
 from pathlib import Path
 from krait.utils.templates import env
@@ -41,8 +42,8 @@ class SetupScript(File):
         self.linter = linter
         self.type_checker = type_checker
         self.test_framework = test_framework
-        self.dependencies = set()
-        self.test_dependencies = set()
+        self.dependencies: Set[str] = set()
+        self.test_dependencies: Set[str] = set()
 
         if self.cli_framework:
             self.dependencies.update(self.cli_framework.packages)
