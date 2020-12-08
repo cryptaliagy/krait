@@ -24,7 +24,7 @@ def create(
     test_framework: ktest.BaseTestFramework,
     cli_framework: kcli.BaseCliFramework,
     directories: rndr.DirectoryRenderer,
-    files: rndr.FileRenderer
+    files: rndr.FileRenderer,
 ):
     '''
     Create a new python project with the specified options

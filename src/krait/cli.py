@@ -87,9 +87,12 @@ def setup_prompt(ctx, param, val):
             f'{param.name} must be specified when using --suppress-interactive'
         )
     if val is None:
-        click.echo('Setting up new project...')
+        if not ctx.params['quiet']:
+            click.echo('Setting up new project...')
         return click.prompt('Project name', type=str)
-    click.echo(f'Setting up new project {val}...')
+
+    if not ctx.params['quiet']:
+        click.echo(f'Setting up new project {val}...')
     return val
 
 
@@ -153,6 +156,13 @@ def setup_prompt(ctx, param, val):
     is_eager=True,
     help='Suppress interactive prompt for missing fields and use defaults instead',
 )
+@click.option(
+    '-q',
+    '--quiet',
+    is_flag=True,
+    is_eager=True,
+    help='Suppresses output'
+)
 @click.argument('project_name', required=False, callback=setup_prompt)
 def create(
     author_name: str,
@@ -164,6 +174,7 @@ def create(
     project_name: str,
     cli: str,
     suppress: bool,  # Used in prompting callback, so can't suppress value
+    quiet: bool
 ):
     '''
     Creates a new python project based on the specified options
@@ -177,6 +188,10 @@ def create(
     test_framework = test_frameworks[tf](project_name, cli_framework.name, files, directories)
     linter = linters[lnt](project_name, files, directories)
     type_checker = type_checkers[tc](project_name, files, directories)
+
+    if not quiet:
+        directories.set_output(click.echo)
+        files.set_output(click.echo)
 
     main.create(
         project_name=project_name,

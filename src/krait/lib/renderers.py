@@ -27,8 +27,10 @@ class DirectoryRenderer(abc.AbstractDirectoryRenderer):
     def create_all(self, purge: bool = True):
         self.directories.sort()
 
+        self.output(f'Creating project directory {self.root}...')
         self.root.mkdir()
         for directory in self.directories:
+            self.output(f'Creating {self.root}/{directory}...')
             (self.root / directory).mkdir()
 
         if purge:
@@ -56,6 +58,7 @@ class FileRenderer(abc.AbstractFileRenderer):
 
     def write_all(self, purge: bool = True):
         for file in self.files.values():
+            self.output(f'Writing {self.root}/{file.path}...')
             with open(self.root / file.path, 'w') as f:
                 f.write(file.contents)
 

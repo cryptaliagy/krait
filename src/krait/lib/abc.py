@@ -16,6 +16,14 @@ class AbstractObjectRenderer:
 
     def __init__(self, root: Path):
         self.root = root
+        self._output = None
+
+    def set_output(self, output):
+        self._output = output
+
+    def output(self, msg: str):
+        if self._output is not None:
+            self._output(msg)
 
 
 class AbstractFile:
