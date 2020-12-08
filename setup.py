@@ -36,7 +36,10 @@ setup(
         ],
         'krait.automations': [
             'gha = krait.lib.plugins.automations:GithubActions',
-            'none = krait.lib.plugins.automations:NoAutomation'
+            'none = krait.lib.plugins.automations:NoAutomation',
         ],
+        'krait.helplinks': [
+            'krait = krait.lib.plugins.help_links:KraitHelpLinks',
+        ]
     },
 )

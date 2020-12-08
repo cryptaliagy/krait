@@ -7,6 +7,7 @@ import krait.lib.plugins.test_frameworks as ktest
 import krait.lib.plugins.type_checkers as ktype
 import krait.lib.plugins.linters as klint
 import krait.lib.plugins.automations as kauto
+import krait.lib.plugins.help_links as khelp
 import krait.lib.renderers as rndr
 import krait.main as main
 
@@ -38,6 +39,16 @@ automations = cast(
     Dict[str, Type[kauto.BaseAutomation]],
     plugin_utils.load_plugins('krait.automations')
 )
+
+help_link_objects = cast(
+    Dict[str, Type[khelp.BaseHelpLinks]],
+    plugin_utils.load_plugins('krait.helplinks')
+)
+
+help_links = {}
+
+for obj in help_link_objects.values():
+    help_links.update(obj.links)
 
 defaults = plugin_utils.get_plugin_defaults()
 canonical_name = {
@@ -151,6 +162,9 @@ def create(
     cli: str,
     suppress: bool,  # Used in prompting callback, so can't suppress value
 ):
+    '''
+    Creates a new python project based on the specified options
+    '''
     root = Path(f'./{project_name}')
     directories = rndr.DirectoryRenderer(root)
     files = rndr.FileRenderer(root)
@@ -181,10 +195,12 @@ def set_default():
 
 
 @click.command('help')
-def launch_help():
+@click.argument('link', type=click.Choice(help_links.keys()))
+def launch_help(link):
     '''
     Launches the specified help site
     '''
+    click.launch(help_links[link])
 
 
 @click.group()
