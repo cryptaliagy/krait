@@ -25,7 +25,8 @@ def check_for_update() -> str:
             ], stderr=subprocess.DEVNULL)
 
         pattern = r'LATEST:\s+(\d+\.\d+(\.\d+)?)'
-        if m := re.search(pattern, o.decode('utf-8')):
+        m = re.search(pattern, o.decode('utf-8'))
+        if m:
             return m.group(1)
     except Exception:
         pass
