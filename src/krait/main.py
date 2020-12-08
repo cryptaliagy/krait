@@ -50,6 +50,7 @@ def create(
     ))
 
     cli_framework.render_file()
+    test_framework.render_file()
 
     readme_file = kf.File('README.md', f'# {project_name}')
     setup_script = kf.SetupScript(

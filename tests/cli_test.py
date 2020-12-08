@@ -29,8 +29,10 @@ def test_cli_create():
         assert (project_path / 'src').exists()
         assert (project_path / 'src/project').exists()
         assert (project_path / 'src/project/__init__.py').exists()
+        assert (project_path / 'src/project/main.py').exists()
         assert (project_path / 'tests').exists()
         assert (project_path / 'tests/__init__.py').exists()
+        assert (project_path / 'tests/cli_test.py').exists()
 
 
 @pytest.mark.cli
