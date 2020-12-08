@@ -13,6 +13,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/taliamax/krait',
+    license='Apache Software License',
     packages=find_packages(
         'src'
     ),
@@ -54,6 +55,7 @@ setup(
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
         'Intended Audience :: Developers',
+        'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
