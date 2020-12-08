@@ -114,7 +114,7 @@ def setup_prompt(ctx, param, val):
     '-l',
     '--linter',
     'lnt',
-    type=click.Choice(linters.keys(), case_sensitive=False),
+    type=click.Choice(plugin_utils.get_plugin_keys(linters), case_sensitive=False),
     callback=prompt_if_necessary,
     help='Which linter to use with the new project'
 )
@@ -122,7 +122,7 @@ def setup_prompt(ctx, param, val):
     '-c',
     '--type-checker',
     'tc',
-    type=click.Choice(type_checkers.keys(), case_sensitive=False),
+    type=click.Choice(plugin_utils.get_plugin_keys(type_checkers), case_sensitive=False),
     callback=prompt_if_necessary,
     help='Which type checker to use with the new project'
 )
@@ -130,7 +130,7 @@ def setup_prompt(ctx, param, val):
     '-t',
     '--test-framework',
     'tf',
-    type=click.Choice(test_frameworks.keys(), case_sensitive=False),
+    type=click.Choice(plugin_utils.get_plugin_keys(test_frameworks), case_sensitive=False),
     callback=prompt_if_necessary,
     help='Which test framework to use with the new project'
 )
@@ -138,13 +138,13 @@ def setup_prompt(ctx, param, val):
     '-a',
     '--automation',
     'aut',
-    type=click.Choice(automations.keys(), case_sensitive=False),
+    type=click.Choice(plugin_utils.get_plugin_keys(automations), case_sensitive=False),
     callback=prompt_if_necessary,
     help='Which automation system to use with the new project'
 )
 @click.option(
     '--cli',
-    type=click.Choice(cli_frameworks.keys(), case_sensitive=False),
+    type=click.Choice(plugin_utils.get_plugin_keys(cli_frameworks), case_sensitive=False),
     callback=prompt_if_necessary,
     help='Which CLI framework system to use with the new project'
 )

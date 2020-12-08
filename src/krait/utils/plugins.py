@@ -10,6 +10,8 @@ import krait.lib.abc as abc
 
 from typing import (
     Dict,
+    List,
+    Any
 )
 
 
@@ -41,3 +43,14 @@ def get_plugin_defaults() -> Dict[str, str]:
     }
 
     return defaults
+
+
+def get_plugin_keys(plugins: Dict[str, Any]) -> List[str]:
+    plugin_keys = list(plugins.keys())
+
+    none_index = plugin_keys.index('none')
+
+    plugin_keys[none_index], plugin_keys[-1] =\
+        plugin_keys[-1], plugin_keys[none_index]
+
+    return plugin_keys
