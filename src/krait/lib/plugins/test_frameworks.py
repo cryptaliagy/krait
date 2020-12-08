@@ -43,11 +43,12 @@ class Pytest(BaseTestFramework):
         self.name = f'pytest-{self.cli_framework}'
         self.setup_name = 'pytest'
         self.setup_vars = {'cli_framework': cli_framework}
+        self.file_location = 'tests'
 
     def render_file(self):
         if self.cli_framework == 'none':
             self.file_name = 'main_test.py'
-            self.main_file = kf.File(f'src/{self.project_name}/{self.file_name}')
+            self.main_file = kf.File(f'tests/{self.file_name}')
             self.file_renderer.add_file(self.main_file)
         else:
             super().render_file()
