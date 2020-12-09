@@ -1,7 +1,24 @@
 # Changelog
 
 
-## 0.3.1
+## 0.3.4
+
+### New
+
+* Changelog generation. [Natalia Maximo]
+
+### Fix
+
+* Bump version for release. [Natalia Maximo]
+
+* Updated release process for new github env variable system. [Natalia Maximo]
+
+* Bump version for release. [Natalia Maximo]
+
+* Fixed wrong changelog version. [Natalia Maximo]
+
+
+## 0.3.1 (2020-12-08)
 
 ### New
 
@@ -82,3 +99,5 @@
 * Dev: setup of project repository. [Natalia Maximo]
 
 * Initial commit. [Natalia Maximo]
+
+
