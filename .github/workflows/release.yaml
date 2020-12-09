@@ -1,0 +1,115 @@
+name: release
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'VERSION'
+
+jobs:
+  version-check:
+    runs-on: ubuntu-latest
+    name: Verify version has been increased
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install necessary package for scripts to run
+        run: pip install packaging
+
+      - name: Verify that the version has been increased
+        run: python scripts/version_verification.py $(python scripts/extract_version.py) $(cat VERSION)
+
+  build:
+    needs: version-check
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python: ['3.6', '3.7', '3.8', '3.9']
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    name: Testing krait with python ${{ matrix.python }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install dependencies
+        run: pip install .[tests]
+
+      - name: Lint with flake8
+        run: flake8
+
+      - name: Type check with mypy
+        run: mypy
+
+      - name: Test with pytest
+        run: pytest
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    name: Releasing package
+    env:
+      TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+      TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Needed for changelog generation
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install release packages
+        run: pip install wheel gitchangelog pystache
+
+      - name: Ensure clean dist/ and build/ folders
+        run: rm -rf dist build
+        continue-on-error: true
+
+      - name: Build release
+        run: python setup.py sdist bdist_wheel
+
+      - name: Extract last version tag
+        run: echo "::set-env name=previous_tag::$(python scripts/extract_version.py)"
+
+      - name: Extract wheel artifact name
+        run: echo "::set-env name=wheel_name::$(echo dist/*.whl)"
+
+      - name: Extract tar.gz artifact name
+        run: echo "::set-env name=tar_name::$(echo dist/*.tar.gz)"
+
+      - name: Pull tags from the repo
+        run: git pull --tags
+
+      - name: Generate full changelog
+        run: gitchangelog | sed "s/(unreleased)/$(cat VERSION)/" > CHANGELOG.md
+
+      - name: Make commit for auto-generated changelog
+        uses: EndBug/add-and-commit@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          add: 'CHANGELOG.md'
+          message: '!gitchangelog'
+
+      - name: Generate version changelog for release
+        run: gitchangelog ${{ env.previous_tag }}..HEAD | sed "s/## (unreleased)/PyDeepMerge v$(cat VERSION)/" > version_changelog.md
+
+      - name:  Create Github release & upload files
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: hub release create -a ${{ env.wheel_name }} -a ${{ env.tar_name }} -F version_changelog.md $(cat VERSION)
+
+      - name: Install Twine
+        run: pip install twine
+
+      - name: Release package
+        run: twine upload dist/*

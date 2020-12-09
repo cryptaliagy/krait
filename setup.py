@@ -5,6 +5,9 @@ from setuptools import setup, find_packages
 with open('README.md', 'r') as f:
     long_description = f.read()
 
+with open('VERSION', 'r') as f:
+    version = f.read()
+
 setup(
     name='krait',
     description='A Python CLI tool to create new python projects.',
@@ -17,9 +20,12 @@ setup(
     packages=find_packages(
         'src'
     ),
+    extras_require={
+        'tests': ['pytest-cov', 'flake8', 'mypy', 'pytest'],
+    },
     package_dir={'': 'src'},
     include_package_data=True,
-    version='0.3.1',
+    version=version,
     install_requires=[
         'click', 'jinja2',
     ],
