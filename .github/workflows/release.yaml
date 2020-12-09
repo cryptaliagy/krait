@@ -78,13 +78,13 @@ jobs:
         run: python setup.py sdist bdist_wheel
 
       - name: Extract last version tag
-        run: echo "::set-env name=previous_tag::$(python scripts/extract_version.py)"
+        run: echo "previous_tag=$(python scripts/extract_version.py)" >> $GITHUB_ENV
 
       - name: Extract wheel artifact name
-        run: echo "::set-env name=wheel_name::$(echo dist/*.whl)"
+        run: echo "wheel_name=$(echo dist/*.whl)" >> $GITHUB_ENV
 
       - name: Extract tar.gz artifact name
-        run: echo "::set-env name=tar_name::$(echo dist/*.tar.gz)"
+        run: echo "tar_name=$(echo dist/*.tar.gz)" >> $GITHUB_ENV
 
       - name: Pull tags from the repo
         run: git pull --tags
@@ -101,12 +101,12 @@ jobs:
           message: '!gitchangelog'
 
       - name: Generate version changelog for release
-        run: gitchangelog ${{ env.previous_tag }}..HEAD | sed "s/## (unreleased)/PyDeepMerge v$(cat VERSION)/" > version_changelog.md
+        run: gitchangelog $previous_tag..HEAD | sed "s/## (unreleased)/PyDeepMerge v$(cat VERSION)/" > version_changelog.md
 
       - name:  Create Github release & upload files
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: hub release create -a ${{ env.wheel_name }} -a ${{ env.tar_name }} -F version_changelog.md $(cat VERSION)
+        run: hub release create -a $wheel_name -a $tar_name -F version_changelog.md $(cat VERSION)
 
       - name: Install Twine
         run: pip install twine
