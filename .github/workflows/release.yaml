@@ -101,7 +101,7 @@ jobs:
           message: '!gitchangelog'
 
       - name: Generate version changelog for release
-        run: gitchangelog $previous_tag..HEAD | sed "s/## (unreleased)/PyDeepMerge v$(cat VERSION)/" > version_changelog.md
+        run: gitchangelog $previous_tag..HEAD | sed "s/## (unreleased)/Krait v$(cat VERSION)/" > version_changelog.md
 
       - name:  Create Github release & upload files
         env:
