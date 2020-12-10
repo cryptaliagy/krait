@@ -229,25 +229,37 @@ def launch_help(link):
     help='Prevent checking for updates. '
     'Can be set with env var KRAIT_NO_UPDATE_CHECK'
 )
-def cli(no_update: bool):  # pragma: no cover
+@click.pass_context
+def cli(ctx: click.Context, no_update: bool):  # pragma: no cover
     '''
     Krait is a CLI to help start up new python application. To get
     information on specific subcommands, use `krait [COMMAND] --help`.
     '''
-    if not no_update and update_utils.should_check_update():
+    if not no_update and update_utils.should_check_update(ctx):
         update_ver = update_utils.check_for_update()
         if update_ver:
             click.secho(
                 'A new version of krait is available!\n'
-                f'Install v{update_ver} by running `pip install --upgrade krait`',
+                f'Install v{update_ver} by running `krait update`',
                 fg='yellow'
             )
+
+
+@click.command('upgrade')
+def update():
+    '''
+    Runs the pip upgrade process.
+
+    This checks if `krait` was installed globally or with --user
+    '''
+    update_utils.run_update()
 
 
 # Adding commands to group
 cli.add_command(create)  # pragma: no cover
 # cli.add_command(set_default)  # pragma: no cover
 cli.add_command(launch_help)  # pragma: no cover
+cli.add_command(update)  # pragma: no cover
 
 if __name__ == '__main__':  # pragma: no cover
     cli()
