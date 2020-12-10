@@ -8,9 +8,16 @@ import re
 
 
 def should_check_update(ctx: click.Context) -> bool:
+    executing_help = '--help' in sys.argv
     check_update = os.environ.get('KRAIT_NO_UPDATE_CHECK', None) is None
+    default_config_enabled = ctx.obj['auto_check_for_updates']
     is_updating = ctx.invoked_subcommand == 'update'
-    return check_update and not is_updating
+    return (
+        not executing_help and
+        check_update and
+        default_config_enabled and
+        not is_updating
+    )
 
 
 def run_python_command(cmd: str) -> str:
