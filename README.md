@@ -5,6 +5,7 @@
 [![PyPI Status Badge](https://img.shields.io/pypi/status/krait)](https://pypi.org/project/krait/)
 [![Python versions badge](https://img.shields.io/pypi/pyversions/krait)](https://github.com/taliamax/krait)
 [![License](https://img.shields.io/github/license/taliamax/krait)](https://github.com/taliamax/krait/blob/master/LICENSE)
+[![Downloads per month](https://img.shields.io/pypi/dm/krait)](https://pypi.org/project/krait/)
 
 Welcome to Krait!
 
