@@ -4,7 +4,8 @@ import krait.lib.abc as abc
 from typing import (
     Union,
     List,
-    Set
+    Set,
+    Optional,
 )
 from pathlib import Path
 from krait.utils.templates import env
@@ -27,16 +28,16 @@ class SetupScript(File):
     def __init__(
         self,
         project_name: str,
-        author: str,
-        author_email: str,
+        author: Optional[str],
+        author_email: Optional[str],
         cli_framework: abc.AbstractPythonPlugin,
         linter: abc.AbstractPythonPlugin,
         type_checker: abc.AbstractPythonPlugin,
         test_framework: abc.AbstractPythonPlugin,
     ):
         self.path = 'setup.py'
-        self.author = author
-        self.author_email = author_email
+        self.author = author or ''
+        self.author_email = author_email or ''
         self.project_name = project_name
         self.cli_framework = cli_framework
         self.linter = linter

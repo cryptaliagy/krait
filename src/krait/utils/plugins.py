@@ -33,18 +33,6 @@ def load_plugins(plugin_type: str) -> Dict[str, abc.AbstractPlugin]:
     return plugins
 
 
-def get_plugin_defaults() -> Dict[str, str]:
-    defaults = {
-        'aut': 'gha',
-        'lnt': 'flake8',
-        'tc': 'mypy',
-        'cli': 'click',
-        'tf': 'pytest',
-    }
-
-    return defaults
-
-
 def get_plugin_keys(plugins: Dict[str, Any]) -> List[str]:
     plugin_keys = list(plugins.keys())
 
