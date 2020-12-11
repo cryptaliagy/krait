@@ -1,7 +1,38 @@
 # Changelog
 
 
-## 0.3.4
+## 0.4
+
+### New
+
+* Added update cooldown configs and support for using 'python -m krait' [Natalia Maximo]
+
+* Added configuration system. [Natalia Maximo]
+
+* Added 'krait update' command. [Natalia Maximo]
+
+### Changes
+
+* Reworked 'cli framework' to 'project type' [Natalia Maximo]
+
+* Bumped up version because of the number of changes. [Natalia Maximo]
+
+* Dev status is now beta. [Natalia Maximo]
+
+* Added downloads badge. [Natalia Maximo]
+
+### Fix
+
+* Use float for timestamp instead of int. [Natalia Maximo]
+
+* Use timestamp instead of iso format for py3.6 compatibility. [Natalia Maximo]
+
+* Added pydeepmerge to requirements. [Natalia Maximo]
+
+* Changed release name to appropriate project name. [Natalia Maximo]
+
+
+## 0.3.4 (2020-12-09)
 
 ### New
 
