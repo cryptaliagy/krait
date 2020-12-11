@@ -43,6 +43,7 @@ def get_config_defaults() -> Dict[str, Any]:
         'tf': 'pytest',
         'default_author_name': None,
         'default_author_email': None,
+        'hours_between_update_checks': 24,
     }
 
 
