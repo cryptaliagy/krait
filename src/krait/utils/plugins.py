@@ -36,9 +36,10 @@ def load_plugins(plugin_type: str) -> Dict[str, abc.AbstractPlugin]:
 def get_plugin_keys(plugins: Dict[str, Any]) -> List[str]:
     plugin_keys = list(plugins.keys())
 
-    none_index = plugin_keys.index('none')
+    if 'none' in plugin_keys:
+        none_index = plugin_keys.index('none')
 
-    plugin_keys[none_index], plugin_keys[-1] =\
-        plugin_keys[-1], plugin_keys[none_index]
+        plugin_keys[none_index], plugin_keys[-1] =\
+            plugin_keys[-1], plugin_keys[none_index]
 
     return plugin_keys

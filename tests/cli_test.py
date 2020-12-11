@@ -19,11 +19,12 @@ def mock_configs():
             'aut': 'gha',
             'lnt': 'flake8',
             'tc': 'mypy',
-            'cli': 'click',
+            'prj': 'click',
             'tf': 'pytest',
             'default_author_name': None,
             'default_author_email': None,
             'hours_between_update_checks': 24,
+            'config_folder': '',
         }
         mock_config.get_configs.return_value = conf
         config_file = mock.Mock()
@@ -32,8 +33,15 @@ def mock_configs():
         yield mock_config
 
 
+@pytest.fixture()
+def mock_update():
+    with mock.patch('krait.cli.update_utils') as mock_upd:
+        mock_upd.should_check_update.return_value = False
+        yield mock_upd
+
+
 @pytest.mark.cli
-def test_cli_create(mock_configs):
+def test_cli_create(mock_configs, mock_update):
     '''
     Tests that the actual CLI works as expected. As the project
     develops, new tests are likely to be required, such as passing

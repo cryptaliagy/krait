@@ -14,18 +14,18 @@ from typing import (
 
 
 class BaseTestFramework(bp.BasePythonPlugin):
-    cli_framework: str
+    project_framework: str
 
     def __init__(
         self,
         project_name: str,
-        cli_framework: str,
+        project_framework: str,
         file_renderer: rndr.FileRenderer,
         dir_renderer: rndr.DirectoryRenderer
     ):
         self.file_name = 'cli_test.py'
         super().__init__(project_name, file_renderer, dir_renderer)
-        self.cli_framework = cli_framework
+        self.project_framework = project_framework
         self.name = ''
         self.rendering_params = {'project_name': project_name}
 
@@ -36,18 +36,18 @@ class Pytest(BaseTestFramework):
     def __init__(
         self,
         project_name: str,
-        cli_framework: str,
+        project_framework: str,
         file_renderer: rndr.FileRenderer,
         dir_renderer: rndr.DirectoryRenderer
     ):
-        super().__init__(project_name, cli_framework, file_renderer, dir_renderer)
-        self.name = f'pytest-{self.cli_framework}'
+        super().__init__(project_name, project_framework, file_renderer, dir_renderer)
+        self.name = f'pytest-{self.project_framework}'
         self.setup_name = 'pytest'
-        self.setup_vars = {'cli_framework': cli_framework}
+        self.setup_vars = {'project_framework': project_framework}
         self.file_location = 'tests'
 
     def render_file(self):
-        if self.cli_framework == 'none':
+        if self.project_framework == 'none':
             self.file_name = 'main_test.py'
             self.main_file = kf.File(f'tests/{self.file_name}')
             self.file_renderer.add_file(self.main_file)

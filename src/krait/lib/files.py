@@ -30,7 +30,7 @@ class SetupScript(File):
         project_name: str,
         author: Optional[str],
         author_email: Optional[str],
-        cli_framework: abc.AbstractPythonPlugin,
+        project_framework: abc.AbstractPythonPlugin,
         linter: abc.AbstractPythonPlugin,
         type_checker: abc.AbstractPythonPlugin,
         test_framework: abc.AbstractPythonPlugin,
@@ -39,15 +39,15 @@ class SetupScript(File):
         self.author = author or ''
         self.author_email = author_email or ''
         self.project_name = project_name
-        self.cli_framework = cli_framework
+        self.project_framework = project_framework
         self.linter = linter
         self.type_checker = type_checker
         self.test_framework = test_framework
         self.dependencies: Set[str] = set()
         self.test_dependencies: Set[str] = set()
 
-        if self.cli_framework:
-            self.dependencies.update(self.cli_framework.packages)
+        if self.project_framework:
+            self.dependencies.update(self.project_framework.packages)
 
         if self.linter:
             self.test_dependencies.update(self.linter.packages)

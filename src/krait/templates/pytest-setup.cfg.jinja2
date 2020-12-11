@@ -1,6 +1,6 @@
 [tool:pytest]
 markers =
     unit: Marks a unit test
-    {% if cli_framework != 'none' -%} cli: Marks a CLI test {%- endif %}
+    {% if project_framework == 'click' -%} cli: Marks a CLI test {%- endif %}
 testpaths = tests
 addopts = --cov=src --cov-report term-missing
