@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import click
+import pydeepmerge as pdm
 
 import krait.utils.plugins as plugin_utils
 import krait.utils.config as config_utils
@@ -308,6 +309,12 @@ def create(
     type=click.Choice(['yes', 'no'], case_sensitive=False),
     help='Whether Krait should automatically check for updates when run'
 )
+@click.option(
+    '--set-update-cooldown',
+    'hours_between_update_checks',
+    type=int,
+    help='The number of hours Krait will wait between checking for updates'
+)
 def set_default(**kwargs: Optional[str]):
     '''
     Sets the specified configurations as the new defaults
@@ -333,7 +340,7 @@ def launch_help(link):
     click.launch(help_links[link])
 
 
-@click.group()
+@click.group('krait')
 @click.version_option()
 @click.option(
     '--no-update',
@@ -407,6 +414,17 @@ def cli(ctx: click.Context, no_update: bool):  # pragma: no cover
         )
     else:
         configs = config_utils.get_configs()
+        defaults = config_utils.get_config_defaults()
+        # Ensure new config options are loaded
+        updated_configs = pdm.deep_merge(defaults, configs)
+        if updated_configs != configs:
+            config_utils.write_configs(
+                config_file,
+                **configs
+            )
+        configs = updated_configs
+
+    configs['config_folder'] = config_file.parent
     ctx.obj = configs
 
     if not no_update and update_utils.should_check_update(ctx):

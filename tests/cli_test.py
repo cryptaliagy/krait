@@ -23,6 +23,7 @@ def mock_configs():
             'tf': 'pytest',
             'default_author_name': None,
             'default_author_email': None,
+            'hours_between_update_checks': 24,
         }
         mock_config.get_configs.return_value = conf
         config_file = mock.Mock()
