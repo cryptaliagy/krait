@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import click
-import pydeepmerge as pdm
+import pydeepmerge as pdm  # type: ignore
 
 import krait.utils.plugins as plugin_utils
 import krait.utils.config as config_utils
