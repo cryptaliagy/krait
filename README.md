@@ -11,13 +11,14 @@ Welcome to Krait!
 
 Krait is a python-built CLI for new python projects! Working on new code usually means setting up linters, type checkers, testing frameworks, and/or automations, but how often do those things get worked on?
 
-I made Krait to solve the issue of starting up new python CLIs rapidly while ensuring that code quality is high. By baking these tools into the project creation process, you can find mistakes and issues early on and save time debugging.
+I made Krait to solve the issue of starting up new python projects rapidly while ensuring that code quality is high. By baking these tools into the project creation process, you can find mistakes and issues early on and save time debugging.
 
-Krait is currently in Alpha, and new features are still being worked on. A few of the features coming soon:
+Krait is currently in Beta, and new features are still being worked on. A few of the features coming soon:
 
 - Git integration, allowing new projects to already be initialized repositories
-- Customizeable defaults, including saving preferred name and email to be used by new projects
+- Saving preferred name and email for new project startup
 - Pre-commit hooks
+- Support for creating projects with Flask
 
 Documentation is also being worked on to explain the process of extending Krait by writing your own plugins. This would allow external packages to enhance the number of options permitted for each of the tools that we support
 
