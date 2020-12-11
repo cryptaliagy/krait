@@ -11,7 +11,7 @@ from typing import (
 )
 
 
-class BaseCliFramework(bp.BasePythonPlugin):
+class BaseProjectFramework(bp.BasePythonPlugin):
     file_renderer: rndr.FileRenderer
     dir_renderer: rndr.DirectoryRenderer
     name: str
@@ -26,7 +26,7 @@ class BaseCliFramework(bp.BasePythonPlugin):
         super().__init__(project_name, file_renderer, dir_renderer)
 
 
-class ClickFramework(BaseCliFramework):
+class ClickFramework(BaseProjectFramework):
     packages = ['click']
 
     def __init__(
@@ -39,7 +39,7 @@ class ClickFramework(BaseCliFramework):
         self.name = 'click'
 
 
-class NoCliFramework(BaseCliFramework):
+class LibraryProject(BaseProjectFramework):
     packages: List[str] = []
 
     def __init__(
@@ -49,4 +49,4 @@ class NoCliFramework(BaseCliFramework):
         dir_renderer: rndr.DirectoryRenderer
     ):
         super().__init__(project_name, file_renderer, dir_renderer)
-        self.name = 'none'
+        self.name = 'library'

@@ -33,9 +33,9 @@ setup(
     keywords='cli project startup',
     entry_points={
         'console_scripts': ['krait = krait.cli:cli'],
-        'krait.cli_frameworks': [
-            'click = krait.lib.plugins.cli_frameworks:ClickFramework',
-            'none = krait.lib.plugins.cli_frameworks:NoCliFramework',
+        'krait.project_frameworks': [
+            'click = krait.lib.plugins.project_frameworks:ClickFramework',
+            'library = krait.lib.plugins.project_frameworks:LibraryProject',
         ],
         'krait.linters': [
             'flake8 = krait.lib.plugins.linters:Flake8',

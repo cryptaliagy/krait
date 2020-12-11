@@ -4,7 +4,7 @@ import pathlib
 
 import krait.lib.renderers as rndr
 import krait.lib.files as kf
-import krait.lib.plugins.cli_frameworks as kcli
+import krait.lib.plugins.project_frameworks as kproj
 import krait.lib.plugins.test_frameworks as ktest
 import krait.lib.plugins.type_checkers as ktype
 import krait.lib.plugins.linters as klint
@@ -22,7 +22,7 @@ def create(
     type_checker: ktype.BaseTypeChecker,
     automation: kauto.BaseAutomation,
     test_framework: ktest.BaseTestFramework,
-    cli_framework: kcli.BaseCliFramework,
+    project_framework: kproj.BaseProjectFramework,
     directories: rndr.DirectoryRenderer,
     files: rndr.FileRenderer,
 ):
@@ -49,7 +49,7 @@ def create(
         ]
     ))
 
-    cli_framework.render_file()
+    project_framework.render_file()
     test_framework.render_file()
     automation.render_file()
 
@@ -58,13 +58,13 @@ def create(
         project_name,
         author,
         email,
-        cli_framework,
+        project_framework,
         linter,
         type_checker,
         test_framework
     )
     setup_config = kf.SetupConfig(
-        cli_framework,
+        project_framework,
         linter,
         type_checker,
         test_framework,

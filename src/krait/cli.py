@@ -4,7 +4,7 @@ import pydeepmerge as pdm
 
 import krait.utils.plugins as plugin_utils
 import krait.utils.config as config_utils
-import krait.lib.plugins.cli_frameworks as kcli
+import krait.lib.plugins.project_frameworks as kproj
 import krait.lib.plugins.test_frameworks as ktest
 import krait.lib.plugins.type_checkers as ktype
 import krait.lib.plugins.linters as klint
@@ -26,9 +26,9 @@ from typing import (
 from pathlib import Path
 
 
-cli_frameworks = cast(
-    Dict[str, Type[kcli.BaseCliFramework]],
-    plugin_utils.load_plugins('krait.cli_frameworks')
+project_frameworks = cast(
+    Dict[str, Type[kproj.BaseProjectFramework]],
+    plugin_utils.load_plugins('krait.project_frameworks')
 )
 linters = cast(
     Dict[str, Type[klint.BaseLinter]],
@@ -63,7 +63,7 @@ canonical_name = {
     'tc': 'Type checker',
     'tf': 'Testing framework',
     'aut': 'Automation system',
-    'cli': 'CLI framework',
+    'prj': 'Project framework',
     'always_suppress_prompt': 'Always suppress interactive prompt?',
     'require_author_name': 'Require projects to have an author name?',
     'require_author_email': 'Require projects to have an author email?',
@@ -178,10 +178,12 @@ def yes_no_prompt(msg: str, default: bool = True):
     help='Which automation system to use with the new project'
 )
 @click.option(
-    '--cli',
-    type=click.Choice(plugin_utils.get_plugin_keys(cli_frameworks), case_sensitive=False),
+    '-p',
+    '--project-type',
+    'prj',
+    type=click.Choice(plugin_utils.get_plugin_keys(project_frameworks), case_sensitive=False),
     callback=prompt_if_necessary,
-    help='Which CLI framework system to use with the new project'
+    help='Which project framework to use with the new project'
 )
 @click.option(
     '--suppress-interactive/--no-suppress-interactive',
@@ -211,7 +213,7 @@ def create(
     aut: str,
     tf: str,
     project_name: str,
-    cli: str,
+    prj: str,
     quiet: bool
 ):
     '''
@@ -222,8 +224,8 @@ def create(
     files = rndr.FileRenderer(root)
 
     automation = automations[aut](project_name, files, directories, lnt, tc, tf)
-    cli_framework = cli_frameworks[cli](project_name, files, directories)
-    test_framework = test_frameworks[tf](project_name, cli_framework.name, files, directories)
+    project_framework = project_frameworks[prj](project_name, files, directories)
+    test_framework = test_frameworks[tf](project_name, project_framework.name, files, directories)
     linter = linters[lnt](project_name, files, directories)
     type_checker = type_checkers[tc](project_name, files, directories)
 
@@ -235,7 +237,7 @@ def create(
         project_name=project_name,
         author=author_name,
         email=author_email,
-        cli_framework=cli_framework,
+        project_framework=project_framework,
         linter=linter,
         type_checker=type_checker,
         test_framework=test_framework,
@@ -287,9 +289,11 @@ def create(
     help='Which automation system to use with new projects'
 )
 @click.option(
-    '--cli',
-    type=click.Choice(plugin_utils.get_plugin_keys(cli_frameworks), case_sensitive=False),
-    help='Which CLI framework system to use with new projects'
+    '-p',
+    '--project-type',
+    'prj',
+    type=click.Choice(plugin_utils.get_plugin_keys(project_frameworks), case_sensitive=False),
+    help='Which project framework to use with new projects'
 )
 @click.option(
     '--always-suppress-prompt',
@@ -340,7 +344,7 @@ def launch_help(link):
     click.launch(help_links[link])
 
 
-@click.group('krait')
+@click.group()
 @click.version_option()
 @click.option(
     '--no-update',
@@ -386,9 +390,9 @@ def cli(ctx: click.Context, no_update: bool):  # pragma: no cover
                     'automation system',
                     plugin_utils.get_plugin_keys(automations)
                 ),
-                'cli': default_value_prompt(
-                    'CLI framework',
-                    plugin_utils.get_plugin_keys(cli_frameworks)
+                'prj': default_value_prompt(
+                    'Project framework',
+                    plugin_utils.get_plugin_keys(project_frameworks)
                 ),
                 'always_suppress_prompt': yes_no_prompt(
                     'Always suppress interactive prompt?',
@@ -426,7 +430,6 @@ def cli(ctx: click.Context, no_update: bool):  # pragma: no cover
 
     configs['config_folder'] = config_file.parent
     ctx.obj = configs
-
     if not no_update and update_utils.should_check_update(ctx):
         update_ver = update_utils.check_for_update()
         if update_ver:

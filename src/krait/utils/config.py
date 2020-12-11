@@ -39,7 +39,7 @@ def get_config_defaults() -> Dict[str, Any]:
         'aut': 'gha',
         'lnt': 'flake8',
         'tc': 'mypy',
-        'cli': 'click',
+        'prj': 'click',
         'tf': 'pytest',
         'default_author_name': None,
         'default_author_email': None,
