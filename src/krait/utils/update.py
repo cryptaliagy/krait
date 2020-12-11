@@ -26,14 +26,14 @@ def get_last_update_time(ctx: click.Context) -> datetime:
     if data == '':  # File is empty
         return datetime.fromtimestamp(0)
 
-    return datetime.fromisoformat(data)
+    return datetime.fromtimestamp(int(data))
 
 
 def set_last_update_to_now(ctx: click.Context):
     update_file = get_update_file(ctx)
 
     with update_file.open('w') as f:
-        f.write(str(datetime.now()))
+        f.write(str(datetime.now().timestamp()))
 
 
 def should_check_update(ctx: click.Context) -> bool:
