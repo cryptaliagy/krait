@@ -26,7 +26,7 @@ def get_last_update_time(ctx: click.Context) -> datetime:
     if data == '':  # File is empty
         return datetime.fromtimestamp(0)
 
-    return datetime.fromtimestamp(int(data))
+    return datetime.fromtimestamp(float(data))
 
 
 def set_last_update_to_now(ctx: click.Context):
