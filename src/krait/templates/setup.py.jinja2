@@ -14,7 +14,9 @@ setup(
     extras_require={
         'tests': {{ test_dependencies }},
     },
+{%- if project_type == 'cli' %}
     entry_points={
         'console_scripts': ['{{project_name}} = {{ project_name|replace('-','_') }}.main:main']
     },
+{%- endif %}
 )

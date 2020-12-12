@@ -79,3 +79,7 @@ class AbstractPythonPlugin(AbstractPlugin):
 
     def setup_config(self) -> Optional[str]:
         raise NotImplementedError()
+
+
+class AbstractPythonProjectFramework(AbstractPythonPlugin):
+    project_type: str
