@@ -20,7 +20,7 @@ jobs:
         run: pip install packaging
 
       - name: Verify that the version has been increased
-        run: echo "run_deploy=python scripts/version_verification.py $(python scripts/extract_version.py) $(cat VERSION)" >> $GITHUB_ENV
+        run: echo "run_deploy=$(python scripts/version_verification.py $(python scripts/extract_version.py) $(cat VERSION))" >> $GITHUB_ENV
 
       - run: echo ${{ env.run_deploy }}
 
