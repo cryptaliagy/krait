@@ -17,7 +17,7 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Install dependencies and script
-        run: pip install -r requirements.txt -r test-requirements.txt .
+        run: pip install -r requirements.txt -r test-requirements.txt -e .
 
       - name: Lint with flake8
         run: flake8
@@ -26,3 +26,29 @@ jobs:
 
       - name: Test with pytest
         run: pytest tests/
+
+      - name: Create new krait click project
+        run: krait --skip-config -n '' -e '' -s project
+
+      - name: Install & test newly created project
+        run: |
+          cd project
+          pip install -e .[tests]
+          project --help
+          pytest
+
+      - name: Clean up new project
+        run: cd .. & rm -rf project
+
+      - name: Create new krait lib project
+        run: krait -n '' -e '' -p library -s project
+
+      - name: Install & test newly created project
+        run: |
+          cd project
+          pip install -e .[tests]
+          project --help
+          pytest
+
+      - name: Clean up new project
+        run: cd .. & rm -rf project

@@ -6,6 +6,11 @@ import unittest.mock as mock
 from click.testing import CliRunner
 from pathlib import Path
 
+from typing import (
+    Dict,
+    List,
+)
+
 
 @pytest.fixture()
 def mock_configs():
@@ -40,8 +45,57 @@ def mock_update():
         yield mock_upd
 
 
+common_files: List[str] = [
+    'README.md',
+    'setup.cfg',
+    'setup.py',
+    'MANIFEST.in',
+]
+
+expected_files_for_config: Dict[str, List[str]] = {
+    '-a gha -l flake8 -c mypy -p click -t pytest': [
+        'src/project/__init__.py',
+        'src/project/main.py',
+        'tests/__init__.py',
+        'tests/cli_test.py',
+        '.github/workflows/build.yml',
+    ],
+    '-a none -l none -c none -p click -t pytest': [
+        'src/project/__init__.py',
+        'src/project/main.py',
+        'tests/__init__.py',
+        'tests/cli_test.py',
+        '!.github/workflows/build.yml',
+    ],
+    '-a none -l none -c none -p library -t pytest': [
+        'src/project/__init__.py',
+        'src/project/lib.py',
+        'tests/__init__.py',
+        'tests/lib_test.py',
+        '!.github/workflows/build.yml',
+    ],
+    '-a gha -p library -t pytest': [
+        'src/project/__init__.py',
+        'src/project/lib.py',
+        'tests/__init__.py',
+        'tests/lib_test.py',
+        '!tests/cli_test.py',
+        '.github/workflows/build.yml',
+    ],
+    '-a none -p library -t none': [
+        'src/project/__init__.py',
+        'src/project/lib.py',
+        '!tests/__init__.py',
+        '!tests/lib_test.py',
+        '!tests/cli_test.py',
+        '!.github/workflows/build.yml',
+    ]
+}
+
+
 @pytest.mark.cli
-def test_cli_create(mock_configs, mock_update):
+@pytest.mark.parametrize('cmd', [*expected_files_for_config.keys()])
+def test_cli_create(mock_configs, mock_update, cmd: str):
     '''
     Tests that the actual CLI works as expected. As the project
     develops, new tests are likely to be required, such as passing
@@ -59,22 +113,23 @@ def test_cli_create(mock_configs, mock_update):
             'natalia',
             '-e',
             'email',
+            *cmd.split(),
+            '-s',
             'project',
-            '-s'
         ])
         project_path = Path(f'{fs}/project')
         assert not result.exception
         assert project_path.exists()
-        assert (project_path / 'README.md').exists()
-        assert (project_path / 'setup.cfg').exists()
-        assert (project_path / 'setup.py').exists()
-        assert (project_path / 'src').exists()
-        assert (project_path / 'src/project').exists()
-        assert (project_path / 'src/project/__init__.py').exists()
-        assert (project_path / 'src/project/main.py').exists()
-        assert (project_path / 'tests').exists()
-        assert (project_path / 'tests/__init__.py').exists()
-        assert (project_path / 'tests/cli_test.py').exists()
+
+        expected_files = [
+            *common_files,
+            *expected_files_for_config[cmd]
+        ]
+        for file_name in expected_files:
+            if file_name[0] == '!':
+                assert not (project_path / file_name[1:]).exists()
+            else:
+                assert (project_path / file_name).exists()
 
 
 @pytest.mark.cli
