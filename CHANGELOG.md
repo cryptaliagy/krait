@@ -1,7 +1,46 @@
 # Changelog
 
 
-## 0.4
+## 0.5
+
+### Changes
+
+* Added more tests to release process. [Natalia Maximo]
+
+* Added new pytests and automated test steps. [Natalia Maximo]
+
+* Reworked how library projects are created. [Natalia Maximo]
+
+### Fix
+
+* Corrected error in workflow file. [Natalia Maximo]
+
+* Corrected release issues for windows. [Natalia Maximo]
+
+* Corrected lib_test logic with pytest fixture. [Natalia Maximo]
+
+* Changed main to lib on pytest-library-lib_test.py. [Natalia Maximo]
+
+* Missing pytest mark on generated lib_test.py. [Natalia Maximo]
+
+* Spacing issues and runner issue. [Natalia Maximo]
+
+* Only setup entry points if its a cli app. [Natalia Maximo]
+
+* Used correct krait command in CI tests. [Natalia Maximo]
+
+* Fixed exclude directory for pycache on flake8 configs. [Natalia Maximo]
+
+### Other
+
+* Dev: possible fix for gha release. [Natalia Maximo]
+
+* Dev: debugging release. [Natalia Maximo]
+
+* Doc: updated readme. [Natalia Maximo]
+
+
+## 0.4 (2020-12-11)
 
 ### New
 
