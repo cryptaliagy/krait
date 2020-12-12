@@ -16,6 +16,9 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
+      - name: Ensure latest pip
+        run: pip install --upgrade pip
+
       - name: Install dependencies and script
         run: pip install -r requirements.txt -r test-requirements.txt -e .
 
@@ -47,7 +50,6 @@ jobs:
         run: |
           cd project
           pip install -e .[tests]
-          project --help
           pytest
 
       - name: Clean up new project
