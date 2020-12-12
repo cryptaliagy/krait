@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'VERSION'
 
 jobs:
   version-check:
@@ -22,7 +20,12 @@ jobs:
         run: pip install packaging
 
       - name: Verify that the version has been increased
-        run: python scripts/version_verification.py $(python scripts/extract_version.py) $(cat VERSION)
+        run: echo "run_deploy=python scripts/version_verification.py $(python scripts/extract_version.py) $(cat VERSION)" >> $GITHUB_ENV
+
+      - name: Cancel workflow if not 'yes'
+        if: $run_deploy != 'yes'
+        uses: andymckay/cancel-action@0.2
+
 
   build:
     needs: version-check
@@ -52,7 +55,7 @@ jobs:
         run: pytest
 
       - name: Create new krait click project
-        run: krait --skip-config create -n '' -e '' -s project
+        run: krait --skip-config create -n 'name' -e 'email' -s project
 
       - name: Install & test newly created project
         run: |
@@ -65,7 +68,7 @@ jobs:
         run: cd .. & rm -rf project
 
       - name: Create new krait lib project
-        run: krait create -n '' -e '' -p library -s project
+        run: krait create -n 'name' -e 'email' -p library -s project
 
       - name: Install & test newly created project
         run: |
