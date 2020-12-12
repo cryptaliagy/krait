@@ -8,7 +8,7 @@ import io
 def test_main():
     stdout = sys.stdout  # Save stdout
     output = io.StringIO()  # Capture stdout
-    main.main()
+    lib.main()
     sys.stdout = stdout
 
     assert output.getvalue() == 'Hello, World!\n'
