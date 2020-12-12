@@ -22,8 +22,6 @@ jobs:
       - name: Verify that the version has been increased
         run: echo "run_deploy=$(python scripts/version_verification.py $(python scripts/extract_version.py) $(cat VERSION))" >> $GITHUB_ENV
 
-      - run: echo ${{ env.run_deploy }}
-
       - name: Cancel workflow if not 'yes'
         if: ${{ env.run_deploy != 'yes' }}
         uses: andymckay/cancel-action@0.2
@@ -66,21 +64,17 @@ jobs:
           project --help
           pytest
 
-      - name: Clean up new project
-        run: cd .. & rm -rf project
+      - name: Return to parent directory
+        run: cd ..
 
       - name: Create new krait lib project
-        run: krait create -n 'name' -e 'email' -p library -s project
+        run: krait create -n 'name' -e 'email' -p library -s lib-project
 
       - name: Install & test newly created project
         run: |
           cd project
           pip install -e .[tests]
           pytest
-
-      - name: Clean up new project
-        run: cd .. & rm -rf project
-
   release:
     needs: build
     runs-on: ubuntu-latest

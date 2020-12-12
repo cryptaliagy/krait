@@ -3,7 +3,28 @@ name: build
 on: [push]
 
 jobs:
+  version-check:
+    runs-on: ubuntu-latest
+    name: Verify version has been increased
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install necessary package for scripts to run
+        run: pip install packaging
+
+      - name: Verify that the version has been increased
+        run: echo "run_deploy=$(python scripts/version_verification.py $(python scripts/extract_version.py) $(cat VERSION))" >> $GITHUB_ENV
+
+      - name: Cancel workflow if not 'yes'
+        if: ${{ env.run_deploy == 'yes' && github.ref == 'refs/heads/master'}}
+        uses: andymckay/cancel-action@0.2
+
   build:
+    needs: version-check
     runs-on: ubuntu-latest
     strategy:
       matrix:
