@@ -53,7 +53,7 @@ class GithubActions(BaseAutomation):
             'test_framework': test_framework,
         }
         self.file_location = '.github/workflows'
-        self.file_name = 'pytest.yml'
+        self.file_name = 'build.yml'
         self.name = 'gha'
 
         dir_renderer.add_directory(Path('.github'))

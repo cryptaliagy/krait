@@ -1,0 +1,14 @@
+import pytest
+import {{ project_name|replace('-','_') }}.lib as lib
+import sys
+import io
+
+
+@pytest.mark.
+def test_main():
+    stdout = sys.stdout  # Save stdout
+    output = io.StringIO()  # Capture stdout
+    main.main()
+    sys.stdout = stdout
+
+    assert output.getvalue() == 'Hello, World!\n'

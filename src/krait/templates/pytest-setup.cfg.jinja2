@@ -2,5 +2,6 @@
 markers =
     unit: Marks a unit test
     {% if project_framework == 'click' -%} cli: Marks a CLI test {%- endif %}
+    {% if project_framework == 'library' -%} lib: Marks a library test {%- endif %}
 testpaths = tests
 addopts = --cov=src --cov-report term-missing

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-import pathlib
 
 import krait.lib.renderers as rndr
 import krait.lib.files as kf
@@ -29,26 +28,6 @@ def create(
     '''
     Create a new python project with the specified options
     '''
-    directories.add_directories(
-        *map(
-            lambda p: pathlib.Path(p),
-            [
-                'src',
-                f'src/{project_name.replace("-","_")}',
-                'tests'
-            ]
-        )
-    )
-
-    files.add_files(*map(
-        lambda p: kf.File(p),
-        [
-            'setup.cfg',
-            f'src/{project_name.replace("-","_")}/__init__.py',
-            'tests/__init__.py'
-        ]
-    ))
-
     project_framework.render_file()
     test_framework.render_file()
     automation.render_file()

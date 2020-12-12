@@ -225,7 +225,7 @@ def create(
 
     automation = automations[aut](project_name, files, directories, lnt, tc, tf)
     project_framework = project_frameworks[prj](project_name, files, directories)
-    test_framework = test_frameworks[tf](project_name, project_framework.name, files, directories)
+    test_framework = test_frameworks[tf](project_name, project_framework, files, directories)
     linter = linters[lnt](project_name, files, directories)
     type_checker = type_checkers[tc](project_name, files, directories)
 
@@ -350,26 +350,38 @@ def launch_help(link):
     '--no-update',
     is_flag=True,
     help='Prevent checking for updates. '
-    'Can be set with env var KRAIT_NO_UPDATE_CHECK'
+    'Can be set with env var KRAIT_NO_UPDATE_CHECK',
+)
+@click.option(
+    '--skip-config',
+    is_flag=True,
+    help='Set up krait with defaults if not yet configured'
 )
 @click.pass_context
-def cli(ctx: click.Context, no_update: bool):  # pragma: no cover
+def cli(
+    ctx: click.Context,
+    no_update: bool,
+    skip_config: bool,
+):  # pragma: no cover
     '''
     Krait is a CLI to help start up new python application. To get
     information on specific subcommands, use `krait [COMMAND] --help`.
     '''
     config_file = config_utils.get_config_file()
+
     if not config_file.exists():
         click.secho('Welcome to Krait!', fg='green')
         click.echo(
             'Krait is starting up for the first time '
             'and requires configuration'
         )
-        use_defaults = yes_no_prompt(
-            'Would you like to use the default configurations?\n'
-            'Note: this can be changed later with `krait set-default`'
-        )
-
+        if skip_config:
+            use_defaults = True
+        else:
+            use_defaults = yes_no_prompt(
+                'Would you like to use the default configurations?\n'
+                'Note: this can be changed later with `krait set-default`'
+            )
         if use_defaults:
             configs = config_utils.get_config_defaults()
         else:
@@ -429,6 +441,7 @@ def cli(ctx: click.Context, no_update: bool):  # pragma: no cover
         configs = updated_configs
 
     configs['config_folder'] = config_file.parent
+
     ctx.obj = configs
     if not no_update and update_utils.should_check_update(ctx):
         update_ver = update_utils.check_for_update()

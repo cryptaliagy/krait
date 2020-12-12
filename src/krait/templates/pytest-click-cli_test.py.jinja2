@@ -11,3 +11,4 @@ def test_cli():
     result = runner.invoke(main.main)
 
     assert not result.exception
+    assert result.output == 'Hello, World!\n'
