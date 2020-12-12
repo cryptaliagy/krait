@@ -28,7 +28,7 @@ jobs:
         run: pytest tests/
 
       - name: Create new krait click project
-        run: krait --skip-config -n '' -e '' -s project
+        run: krait --skip-config create -n '' -e '' -s project
 
       - name: Install & test newly created project
         run: |
@@ -41,7 +41,7 @@ jobs:
         run: cd .. & rm -rf project
 
       - name: Create new krait lib project
-        run: krait -n '' -e '' -p library -s project
+        run: krait create -n '' -e '' -p library -s project
 
       - name: Install & test newly created project
         run: |
