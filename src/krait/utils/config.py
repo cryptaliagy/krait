@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-import click
 import json
 from pathlib import Path
 from typing import (
     Dict,
     Any
 )
+import click
 
 
 def get_config_folder() -> Path:
-    dir = click.get_app_dir('Krait')
-    dir_path = Path(dir)
+    app_dir = click.get_app_dir('Krait')
+    dir_path = Path(app_dir)
     if not dir_path.exists():
         dir_path.mkdir()
 
