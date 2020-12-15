@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import krait.lib.abc as abc
-
 from typing import (
     Union,
     List,
@@ -8,6 +6,8 @@ from typing import (
     Optional,
 )
 from pathlib import Path
+
+import krait.lib.abc as abc
 from krait.utils.templates import env
 
 
