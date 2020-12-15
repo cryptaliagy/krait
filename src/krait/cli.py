@@ -1,7 +1,17 @@
 # -*- coding: utf-8 -*-
+
+from typing import (
+    cast,
+    Type,
+    Dict,
+    List,
+    Union,
+    Optional,
+)
+from pathlib import Path
+
 import click
 import pydeepmerge as pdm  # type: ignore
-
 import krait.utils.plugins as plugin_utils
 import krait.utils.config as config_utils
 import krait.lib.plugins.project_frameworks as kproj
@@ -14,16 +24,6 @@ import krait.lib.renderers as rndr
 import krait.main as main
 
 import krait.utils.update as update_utils
-
-from typing import (
-    cast,
-    Type,
-    Dict,
-    List,
-    Union,
-    Optional,
-)
-from pathlib import Path
 
 
 project_frameworks = cast(
@@ -54,8 +54,8 @@ help_link_objects = cast(
 
 help_links = {}
 
-for obj in help_link_objects.values():
-    help_links.update(obj.links)
+for value in help_link_objects.values():
+    help_links.update(value.links)
 
 
 canonical_name = {
