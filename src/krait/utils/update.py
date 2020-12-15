@@ -2,12 +2,13 @@
 import subprocess
 import sys
 import os
-import click
 import site
 import re
 
 from datetime import datetime
 from pathlib import Path
+
+import click
 
 
 def get_update_file(ctx: click.Context) -> Path:
