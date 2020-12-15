@@ -4,7 +4,7 @@ from packaging.version import Version
 
 
 def verify_version_increased(last_version, current_version):
-    if current <= last:
+    if current_version <= last_version:
         print('New version needs to be higher than old version')
         sys.exit(1)
     print('yes')
