@@ -54,8 +54,8 @@ help_link_objects = cast(
 
 help_links = {}
 
-for value in help_link_objects.values():
-    help_links.update(value.links)
+for obj in help_link_objects.values():
+    help_links.update(obj.links)
 
 
 canonical_name = {
