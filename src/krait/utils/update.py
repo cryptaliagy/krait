@@ -70,12 +70,14 @@ def should_check_update(ctx: click.Context) -> bool:
 
 def run_python_command(cmd: str) -> str:
     try:
-        return subprocess.check_output([
+        o = subprocess.check_output([
             sys.executable,
             *cmd.split()
         ], stderr=subprocess.DEVNULL).decode('utf-8')
-    except subprocess.CalledProcessError:  # Non-zero exit code
-        return ''
+    except Exception:
+        o = ''
+
+    return o
 
 
 def run_pip(cmd: str) -> str:
@@ -115,6 +117,12 @@ def run_update():
     '''
     o = run_pip('show krait')
     if site.USER_SITE is not None and site.USER_SITE in o:
-        run_pip('install --user --upgrade krait')
+        subprocess.call([
+            sys.executable,
+            *'-m pip install --user --upgrade krait'.split()
+        ])
     else:
-        run_pip('install --upgrade krait')
+        subprocess.call([
+            sys.executable,
+            *'-m pip install --upgrade krait'.split()
+        ])
