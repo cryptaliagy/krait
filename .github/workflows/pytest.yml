@@ -23,7 +23,11 @@ jobs:
         run: echo "::set-output run_deploy=$(python scripts/version_verification.py $(python scripts/extract_version.py) $(cat VERSION))"
 
       - name: Test the script is running properly?
-        run: echo "${{ github.ref }}"
+        run: echo "$(python scripts/version_verification.py $(python scripts/extract_version.py) $(cat VERSION))"
+      - name: Dump job context
+        env:
+          JOB_CONTEXT: ${{ toJson(job) }}
+        run: echo "$JOB_CONTEXT"
 
   build:
     needs: version_check
