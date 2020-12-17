@@ -87,14 +87,21 @@ def prompt_if_necessary(ctx, param, val):
 
 
 def fail_if_suppress(ctx, param, val):
-    if ctx.obj['suppress'] and val is None and ctx.obj[f'require_{param.name}']:
+    default_val = ctx.obj[f'default_{param.name}']
+    if (
+        ctx.obj['suppress'] and
+        val is None and
+        ctx.obj[f'require_{param.name}'] and
+        default_val is None
+    ):
         raise click.UsageError(
             f'{param.name} must be specified when using --suppress-interactive'
         )
-    if val is None and ctx.obj[f'require_{param.name}']:
+    if val is None and ctx.obj[f'require_{param.name}'] and default_val is None:
         param.prompt = param.name.replace('_', ' ').capitalize()
         return param.prompt_for_value(ctx)
-    return val
+
+    return val or default_val
 
 
 def setup_prompt(ctx, param, val):
@@ -234,6 +241,14 @@ def create(
     Creates a new python project based on the specified options
     '''
     root = Path(f'./{project_name}')
+
+    if root.exists():
+        click.secho('ERROR', fg='red', nl=False)
+        click.secho(': Directory ', nl=False)
+        click.secho(project_name, nl=False, fg='cyan')
+        click.secho(' already exists!')
+        raise click.Abort
+
     directories = rndr.DirectoryRenderer(root)
     files = rndr.FileRenderer(root)
 
@@ -341,6 +356,16 @@ def create(
     'hours_between_update_checks',
     type=int,
     help='The number of hours Krait will wait between checking for updates'
+)
+@click.option(
+    '--author-name',
+    'default_author_name',
+    help='Default name to use as author name for new projects',
+)
+@click.option(
+    '--author-email',
+    'default_author_email',
+    help='Default email to use as author email for new projects',
 )
 def set_default(**kwargs: Optional[str]):
     '''

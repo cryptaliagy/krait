@@ -3,8 +3,12 @@ from setuptools import setup, find_packages
 
 setup(
     name='{{ project_name }}',
-    {%- if author != '' -%} author='{{ author }}', {% endif %}
-    {%- if author_email != '' -%} author_email='{{ author_email }}', {% endif %}
+{%- if author != '' %}
+    author='{{ author }}',
+{%- endif %}
+{%- if author_email != '' %}
+    author_email='{{ author_email }}',
+{%- endif %}
     version='0.1',
     packages=find_packages('src'),
     package_dir={'': 'src'},
