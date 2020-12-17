@@ -29,6 +29,7 @@ class DirectoryRenderer(abc.AbstractDirectoryRenderer):
 
         self.output(f'Creating project directory {self.root}...')
         self.root.mkdir()
+        self.vcs.initialize(self.root)
         for directory in self.directories:
             self.output(f'Creating {self.root}/{directory}...')
             (self.root / directory).mkdir()

@@ -26,6 +26,7 @@ def mock_configs():
             'tc': 'mypy',
             'prj': 'click',
             'tf': 'pytest',
+            'vcs_type': 'none',
             'default_author_name': None,
             'default_author_email': None,
             'hours_between_update_checks': 24,

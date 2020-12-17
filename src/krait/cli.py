@@ -20,6 +20,7 @@ import krait.lib.plugins.type_checkers as ktype
 import krait.lib.plugins.linters as klint
 import krait.lib.plugins.automations as kauto
 import krait.lib.plugins.help_links as khelp
+import krait.lib.plugins.vcs as kvcs
 import krait.lib.renderers as rndr
 import krait.main as main
 
@@ -46,6 +47,10 @@ automations = cast(
     Dict[str, Type[kauto.BaseAutomation]],
     plugin_utils.load_plugins('krait.automations')
 )
+vcs_types = cast(
+    Dict[str, Type[kvcs.BaseVCSPlugin]],
+    plugin_utils.load_plugins('krait.vcs')
+)
 
 help_link_objects = cast(
     Dict[str, Type[khelp.BaseHelpLinks]],
@@ -64,6 +69,7 @@ canonical_name = {
     'tf': 'Testing framework',
     'aut': 'Automation system',
     'prj': 'Project framework',
+    'vcs_type': 'VCS System',
     'always_suppress_prompt': 'Always suppress interactive prompt?',
     'require_author_name': 'Require projects to have an author name?',
     'require_author_email': 'Require projects to have an author email?',
@@ -204,6 +210,13 @@ def yes_no_prompt(msg: str, default: bool = True):
     callback=setup_quiet,
     help='Suppresses output'
 )
+@click.option(
+    '--vcs',
+    'vcs_type',
+    type=click.Choice(plugin_utils.get_plugin_keys(vcs_types), case_sensitive=False),
+    callback=prompt_if_necessary,
+    help='What VCS system to use with the new project'
+)
 @click.argument('project_name', required=False, callback=setup_prompt)
 def create(
     author_name: str,
@@ -214,7 +227,8 @@ def create(
     tf: str,
     project_name: str,
     prj: str,
-    quiet: bool
+    quiet: bool,
+    vcs_type: str,
 ):
     '''
     Creates a new python project based on the specified options
@@ -228,6 +242,9 @@ def create(
     test_framework = test_frameworks[tf](project_name, project_framework, files, directories)
     linter = linters[lnt](project_name, files, directories)
     type_checker = type_checkers[tc](project_name, files, directories)
+    vcs = vcs_types[vcs_type](project_name, files, directories)
+
+    directories.attach_vcs(vcs)
 
     if not quiet:
         directories.set_output(click.echo)
@@ -247,7 +264,7 @@ def create(
     )
 
 
-@click.command('set-default')
+@click.command('set-config')
 @click.option(
     '--require-author-name',
     'require_author_name',
@@ -294,6 +311,12 @@ def create(
     'prj',
     type=click.Choice(plugin_utils.get_plugin_keys(project_frameworks), case_sensitive=False),
     help='Which project framework to use with new projects'
+)
+@click.option(
+    '--vcs',
+    'vcs_type',
+    type=click.Choice(plugin_utils.get_plugin_keys(vcs_types), case_sensitive=False),
+    help='What VCS system to use with the new project'
 )
 @click.option(
     '--always-suppress-prompt',
@@ -403,8 +426,12 @@ def cli(
                     plugin_utils.get_plugin_keys(automations)
                 ),
                 'prj': default_value_prompt(
-                    'Project framework',
+                    'project framework',
                     plugin_utils.get_plugin_keys(project_frameworks)
+                ),
+                'vcs_type': default_value_prompt(
+                    'VCS Type',
+                    plugin_utils.get_plugin_keys(vcs_types)
                 ),
                 'always_suppress_prompt': yes_no_prompt(
                     'Always suppress interactive prompt?',
@@ -468,7 +495,12 @@ def show_config(obj):
                 fg = 'red'
             else:
                 fg = 'cyan'
-            click.secho(f'{key}: ', nl=False, fg='magenta')
+            if len(key) < 5:
+                name = canonical_name[key]
+            else:
+                name = key
+
+            click.secho(f'{name.capitalize().replace("_", " ")}: ', nl=False, fg='magenta')
             click.secho(f'{obj[key]}', fg=fg)
 
 

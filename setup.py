@@ -27,7 +27,7 @@ setup(
     include_package_data=True,
     version=version,
     install_requires=[
-        'click', 'jinja2', 'pydeepmerge'
+        'click', 'jinja2', 'pydeepmerge', 'gitpython'
     ],
     python_requires='>=3.6',
     keywords='cli project startup',
@@ -55,7 +55,11 @@ setup(
         ],
         'krait.helplinks': [
             'krait = krait.lib.plugins.help_links:KraitHelpLinks',
-        ]
+        ],
+        'krait.vcs': [
+            'git = krait.lib.plugins.vcs:GitPlugin',
+            'none = krait.lib.plugins.vcs:NoVCS',
+        ],
     },
     classifiers=[
         'Development Status :: 4 - Beta',

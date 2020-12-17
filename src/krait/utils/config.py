@@ -41,6 +41,7 @@ def get_config_defaults() -> Dict[str, Any]:
         'tc': 'mypy',
         'prj': 'click',
         'tf': 'pytest',
+        'vcs_type': 'git',
         'default_author_name': None,
         'default_author_email': None,
         'hours_between_update_checks': 24,
