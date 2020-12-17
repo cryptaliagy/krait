@@ -34,6 +34,8 @@ jobs:
     name: Testing krait with python ${{ matrix.python }}
     if: ${{ !(needs.version-check.outputs.run_deploy == 'yes' && github.ref == 'refs/heads/master') }}
     steps:
+      - name: Echo output
+        run: echo "${{ needs.version-check.outputs.run_deploy }}"
       - uses: actions/checkout@v2
       - name: Setup python
         uses: actions/setup-python@v2
