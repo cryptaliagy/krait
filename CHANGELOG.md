@@ -1,7 +1,74 @@
 # Changelog
 
 
-## 0.5
+## 0.6.1
+
+### New
+
+* Added azure pipelines to krait generations. [Natalia Maximo]
+
+
+## 0.6 (2020-12-17)
+
+### New
+
+* Added 'krait reset' command. [Natalia Maximo]
+
+* Added vcs support for git (#5) [Natalia Maximo]
+
+  * new: added vcs support for git, resolves #1
+
+  * chg: added gitpython to setup requirements
+  * new: integrated .gitignore rendering, resolves #2
+
+### Changes
+
+* Removed finished tasks from readme file. [Natalia Maximo]
+
+* Better error messaging and default name/email selection. [Natalia Maximo]
+
+* Added codeowner file. [Natalia Maximo]
+
+* Reverted variable name. [Fernando Nogueira]
+
+* Refactored imports. [SeoFernando25]
+
+* Fixed undeclared variable. [SeoFernando25]
+
+* Explicitly disabled autoescape. [SeoFernando25]
+
+* Added .vscode to .gitignore. [SeoFernando25]
+
+* Renamed repeated variable at L57 and L458. [SeoFernando25]
+
+* Reordered imports. [SeoFernando25]
+
+* Refactoring. [SeoFernando25]
+
+* Reordered imports to comply with PEP 8. [Fernando Nogueira]
+
+* Simplified bool comparisons. [Fernando Nogueira]
+
+* Added release gha status badge. [Natalia Maximo]
+
+### Fix
+
+* Resolved issue with the set-output command in gha. [Natalia Maximo]
+
+* Added pattern to codeowners file. [Natalia Maximo]
+
+### Other
+
+* Revert "chg: Added .vscode to .gitignore" [Fernando Nogueira]
+
+  This reverts commit d9a7894e482f29621cfe1e0873974a8327fb4070.
+
+* Revert "chg: refactoring" [SeoFernando25]
+
+  This reverts commit 3c58b13a636fe567a2ece12eeb8779f33e90c9dc.
+
+
+## 0.5 (2020-12-12)
 
 ### Changes
 
