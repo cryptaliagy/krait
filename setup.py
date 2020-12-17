@@ -55,7 +55,11 @@ setup(
         ],
         'krait.helplinks': [
             'krait = krait.lib.plugins.help_links:KraitHelpLinks',
-        ]
+        ],
+        'krait.vcs': [
+            'git = krait.lib.plugins.vcs:GitPlugin',
+            'none = krait.lib.plugins.vcs:NoVCS',
+        ],
     },
     classifiers=[
         'Development Status :: 4 - Beta',

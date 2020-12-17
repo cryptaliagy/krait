@@ -47,8 +47,13 @@ class AbstractFileRenderer(AbstractObjectRenderer):
 
 
 class AbstractDirectoryRenderer(AbstractObjectRenderer):
+    vcs: 'AbstractVCS'
+
     def add_directory(self, directory):
         raise NotImplementedError
+
+    def attach_vcs(self, vcs: 'AbstractVCS'):
+        self.vcs = vcs
 
 
 class AbstractPlugin:
@@ -71,7 +76,8 @@ class AbstractPlugin:
 
 
 class AbstractVCS(AbstractPlugin):
-    pass
+    def initialize(self, project_path: Path):
+        pass
 
 
 class AbstractPythonPlugin(AbstractPlugin):
