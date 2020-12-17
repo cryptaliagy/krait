@@ -3,7 +3,7 @@ name: build
 on: [push]
 
 jobs:
-  version-check:
+  version_check:
     runs-on: ubuntu-latest
     name: Verify version has been increased
     outputs:
@@ -26,13 +26,13 @@ jobs:
         run: echo "${{ github.ref }}"
 
   build:
-    needs: version-check
+    needs: version_check
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python: ['3.6', '3.7', '3.8', '3.9']
     name: Testing krait with python ${{ matrix.python }}
-    if: ${{ !(needs.version-check.outputs.run_deploy == 'yes' && github.ref == 'refs/heads/master') }}
+    if: ${{ !(needs.version_check.outputs.run_deploy == 'yes' && github.ref == 'refs/heads/master') }}
     steps:
       - name: Echo output
         run: echo "${{ needs.version_check.outputs.run_deploy }}"
