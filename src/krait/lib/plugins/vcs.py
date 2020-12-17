@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import krait.lib.abc as abc
-from git import Repo
+from git import Repo  # type: ignore
 from pathlib import Path
 
 
