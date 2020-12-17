@@ -3,7 +3,7 @@ name: build
 on: [push]
 
 jobs:
-  version_check:
+  version-check:
     runs-on: ubuntu-latest
     name: Verify version has been increased
     outputs:
@@ -22,26 +22,15 @@ jobs:
         id: verify
         run: echo "::set-output name=run_deploy::$(python scripts/version_verification.py $(python scripts/extract_version.py) $(cat VERSION))"
 
-      - name: Test the script is running properly?
-        run: echo "$(python scripts/version_verification.py $(python scripts/extract_version.py) $(cat VERSION))"
-      - name: Dump job context
-        env:
-          JOB_CONTEXT: ${{ toJson(job) }}
-        run: echo "$JOB_CONTEXT"
-
   build:
-    needs: version_check
+    needs: version-check
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python: ['3.6', '3.7', '3.8', '3.9']
     name: Testing krait with python ${{ matrix.python }}
-    if: ${{ !(needs.version_check.outputs.run_deploy == 'yes' && github.ref == 'refs/heads/master') }}
+    if: ${{ !(needs.version-check.outputs.run_deploy == 'yes' && github.ref == 'refs/heads/master') }}
     steps:
-      - name: Echo output
-        env:
-          NEEDS_CONTEXT: ${{ toJson(needs) }}
-        run: echo "$NEEDS_CONTEXT"
       - uses: actions/checkout@v2
       - name: Setup python
         uses: actions/setup-python@v2
