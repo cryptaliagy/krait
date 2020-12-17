@@ -390,6 +390,9 @@ def cli(
     Krait is a CLI to help start up new python application. To get
     information on specific subcommands, use `krait [COMMAND] --help`.
     '''
+    if ctx.invoked_subcommand == 'reset':
+        return
+
     config_file = config_utils.get_config_file()
 
     if not config_file.exists():
@@ -405,10 +408,10 @@ def cli(
                 'Would you like to use the default configurations?\n'
                 'Note: this can be changed later with `krait set-default`'
             )
-        if use_defaults:
-            configs = config_utils.get_config_defaults()
-        else:
-            configs = {
+
+        configs = config_utils.get_config_defaults()
+        if not use_defaults:
+            new_configs = {
                 'lnt': default_value_prompt(
                     'linter',
                     plugin_utils.get_plugin_keys(linters)
@@ -447,9 +450,10 @@ def cli(
                     'Check for new versions of krait?'
                 ),
                 'always_run_silent': yes_no_prompt(
-                    'Display file creation outputs?'
+                    'Suppress file creation outputs?'
                 ),
             }
+            configs.update(new_configs)
 
         config_utils.write_configs(
             config_file,
@@ -514,12 +518,48 @@ def update():
     update_utils.run_update()
 
 
+@click.command('reset')
+def reset():
+    '''
+    Deletes all krait configurations. Useful for uninstalling or reinstalling.
+    '''
+    config_folder = config_utils.get_config_folder()
+    # Apparently shutil can cause problem in windows
+    # so will just go through everything in the directory
+    click.secho('Deleting ', nl=False)
+    click.secho(str(config_folder), nl=False, fg='cyan')
+    click.secho('... ', nl=False)
+    directories = [config_folder]
+    emptied_dirs: List[Path] = []
+    try:
+        while len(directories) > 0:
+            directory = directories.pop()
+            for file in directory.glob('*'):
+                if file.is_dir():
+                    directories.append(file)
+                else:
+                    file.unlink()
+            emptied_dirs.append(directory)
+
+        while len(emptied_dirs) > 0:
+            emptied_dirs.pop().rmdir()
+    except Exception:
+        click.secho('ERROR', fg='red')
+        click.secho('Error', nl=False, fg='red')
+        click.secho(': An issue occurred. Please delete ', nl=False)
+        click.secho(str(config_folder), fg='cyan', nl=False)
+        click.secho(' manually.')
+    else:
+        click.secho('DONE', fg='green')
+
+
 # Adding commands to group
 cli.add_command(create)  # pragma: no cover
 cli.add_command(set_default)  # pragma: no cover
 cli.add_command(show_config)  # pragma: no cover
 cli.add_command(launch_help)  # pragma: no cover
 cli.add_command(update)  # pragma: no cover
+cli.add_command(reset)  # pragma: no cover
 
 if __name__ == '__main__':  # pragma: no cover
     cli()
