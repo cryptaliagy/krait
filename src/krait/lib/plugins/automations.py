@@ -25,6 +25,12 @@ class BaseAutomation(bp.BasePythonPlugin):
         test_framework: str,
     ):
         super().__init__(project_name, file_renderer, dir_renderer)
+        self.rendering_params = {
+            'project_name': project_name,
+            'linter': linter,
+            'type_checker': type_checker,
+            'test_framework': test_framework,
+        }
 
 
 class GithubActions(BaseAutomation):
@@ -46,18 +52,35 @@ class GithubActions(BaseAutomation):
             test_framework
         )
 
-        self.rendering_params = {
-            'project_name': project_name,
-            'linter': linter,
-            'type_checker': type_checker,
-            'test_framework': test_framework,
-        }
         self.file_location = '.github/workflows'
         self.file_name = 'build.yml'
         self.name = 'gha'
 
         dir_renderer.add_directory(Path('.github'))
         dir_renderer.add_directory(Path('.github/workflows'))
+
+
+class AzurePipeline(BaseAutomation):
+    def __init__(
+        self,
+        project_name: str,
+        file_renderer: rndr.FileRenderer,
+        dir_renderer: rndr.DirectoryRenderer,
+        linter: str,
+        type_checker: str,
+        test_framework: str,
+    ):
+        super().__init__(
+            project_name,
+            file_renderer,
+            dir_renderer,
+            linter,
+            type_checker,
+            test_framework
+        )
+        self.file_location = '.'
+        self.file_name = 'azure-pipeline.yml'
+        self.name = 'azure'
 
 
 class NoAutomation(BaseAutomation):

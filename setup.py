@@ -51,6 +51,7 @@ setup(
         ],
         'krait.automations': [
             'gha = krait.lib.plugins.automations:GithubActions',
+            'azure = krait.lib.plugins.automations:AzurePipeline',
             'none = krait.lib.plugins.automations:NoAutomation',
         ],
         'krait.helplinks': [
