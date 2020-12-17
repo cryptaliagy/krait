@@ -17,8 +17,6 @@ I made Krait to solve the issue of starting up new python projects rapidly while
 
 Krait is currently in Beta, and new features are still being worked on. A few of the features coming soon:
 
-- Git integration, allowing new projects to already be initialized repositories
-- Saving preferred name and email for new project startup
 - Pre-commit hooks
 - Support for creating projects with Flask
 
