@@ -11,6 +11,7 @@ from typing import (
 from pathlib import Path
 
 import click
+import pkg_resources
 import pydeepmerge as pdm  # type: ignore
 import krait.utils.plugins as plugin_utils
 import krait.utils.config as config_utils
@@ -484,6 +485,12 @@ def cli(
             config_file,
             **configs
         )
+        templates_folder = config_utils.get_config_folder() / 'templates'
+        templates_folder.mkdir()
+        config_utils.copy_all_files_to_target(
+            pkg_resources.resource_filename(__name__, 'templates'),
+            templates_folder,
+        )
     else:
         configs = config_utils.get_configs()
         defaults = config_utils.get_config_defaults()
@@ -541,6 +548,12 @@ def update():
     This checks if `krait` was installed globally or with --user
     '''
     update_utils.run_update()
+    click.secho('Ensuring templates are up to date...', nl=False)
+    click.secho('DONE', fg='green')
+    config_utils.copy_all_files_to_target(
+        pkg_resources.resource_filename(__name__, 'templates'),
+        config_utils.get_config_folder() / 'templates',
+    )
 
 
 @click.command('reset')

@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 import json
 from pathlib import Path
+from os import PathLike
 from typing import (
     Dict,
-    Any
+    Any,
+    Union
 )
 import click
+
+PathIsh = Union[PathLike[str], str]
 
 
 def get_config_folder() -> Path:
@@ -59,3 +63,21 @@ def write_configs(config_file: Path, **kwargs: Any):
 
     with config_file.open('w') as f:
         json.dump(old_configs, f)
+
+
+def copy_all_files_to_target(origin: PathIsh, target: PathIsh):
+    directories = [origin]
+    target_dir = Path(target)
+    if not target_dir.exists():
+        target_dir.mkdir()
+    while len(directories) > 0:
+        directory = Path(directories.pop())
+        for file in directory.glob('*'):
+            relative_dir = file.relative_to(origin)
+            if file.is_dir():
+                directories.append(file)
+                (target_dir / relative_dir).mkdir(exist_ok=True)
+                continue
+            target_file = target_dir / relative_dir
+            if not target_file.exists():
+                target_file.write_text(file.read_text())
