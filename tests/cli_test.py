@@ -37,8 +37,14 @@ def mock_configs():
         config_file = mock.Mock()
         config_file.exists.return_value = True
         mock_config.get_config_file.return_value = config_file
+        yield mock_config
+
+
+@pytest.fixture()
+def mock_templates():
+    with mock.patch('krait.utils.templates.kconfig') as mock_config:
         file_path = Path(pkg_resources.resource_filename(__name__, ''))
-        mock_config.get_config_folder.return_value = file_path.parent
+        mock_config.get_config_folder.return_value = file_path.parent / 'src/krait'
         yield mock_config
 
 
@@ -99,7 +105,7 @@ expected_files_for_config: Dict[str, List[str]] = {
 
 @pytest.mark.cli
 @pytest.mark.parametrize('cmd', [*expected_files_for_config.keys()])
-def test_cli_create(mock_configs, mock_update, cmd: str):
+def test_cli_create(mock_configs, mock_update, mock_templates, cmd: str):
     '''
     Tests that the actual CLI works as expected. As the project
     develops, new tests are likely to be required, such as passing

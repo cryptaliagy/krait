@@ -8,7 +8,7 @@ from typing import (
 from pathlib import Path
 
 import krait.lib.abc as abc
-from krait.utils.templates import env
+from krait.utils.templates import get_env
 
 
 class File(abc.AbstractFile):
@@ -60,7 +60,7 @@ class SetupScript(File):
 
     @property
     def contents(self) -> str:
-        setup_template = env.get_template('setup.py.jinja2')
+        setup_template = get_env().get_template('setup.py.jinja2')
         return setup_template.render(
             project_name=self.project_name,
             author=self.author,
