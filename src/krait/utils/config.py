@@ -9,7 +9,8 @@ from typing import (
 )
 import click
 
-PathIsh = Union[PathLike[str], str]
+
+PathIsh = Union[PathLike, str]
 
 
 def get_config_folder() -> Path:
