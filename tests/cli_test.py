@@ -2,6 +2,7 @@
 import pytest
 import krait.cli as cli
 import unittest.mock as mock
+import pkg_resources
 
 from click.testing import CliRunner
 from pathlib import Path
@@ -36,6 +37,8 @@ def mock_configs():
         config_file = mock.Mock()
         config_file.exists.return_value = True
         mock_config.get_config_file.return_value = config_file
+        file_path = Path(pkg_resources.resource_filename(__name__, ''))
+        mock_config.get_config_folder.return_value = file_path.parent
         yield mock_config
 
 
