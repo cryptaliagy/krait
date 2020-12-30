@@ -487,6 +487,7 @@ def cli(
         )
         templates_folder = config_utils.get_config_folder() / 'templates'
         templates_folder.mkdir()
+        click.secho('Copying template files to install directory...')
         config_utils.copy_all_files_to_target(
             pkg_resources.resource_filename(__name__, 'templates'),
             templates_folder,
