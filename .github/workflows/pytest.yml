@@ -51,6 +51,9 @@ jobs:
       - name: Test with pytest
         run: pytest tests/
 
+      - name: Ensure config directory is clean
+        run: krait reset
+
       - name: Create new krait click project
         run: krait --skip-config create -n '' -e '' -s project
 
