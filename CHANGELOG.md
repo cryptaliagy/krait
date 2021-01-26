@@ -1,7 +1,32 @@
 # Changelog
 
 
-## 0.6.1
+## 0.6.2
+
+### New
+
+* Installed templates in config directory. BREAKING CHANGE. Must re-configure krait on upgrade. [Natalia Maximo]
+
+### Changes
+
+* Added config clean step to CI. [Natalia Maximo]
+
+* Added debug prompt. [Natalia Maximo]
+
+### Fix
+
+* Resolved issue with update time on windows. [Natalia Maximo]
+
+* Patched tests that used wrong install directory. [Natalia Maximo]
+
+* Updated test to use proper directory. [Natalia Maximo]
+
+* Converted path to string in template loader. [Natalia Maximo]
+
+* Py3.6/3.7 compatibility with pathish type. [Natalia Maximo]
+
+
+## 0.6.1 (2020-12-17)
 
 ### New
 
