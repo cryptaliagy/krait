@@ -25,7 +25,7 @@ def get_last_update_time(ctx: click.Context) -> datetime:
         data = f.read()
 
     if data == '':  # File is empty
-        return datetime.fromtimestamp(0)
+        return datetime.min
 
     return datetime.fromtimestamp(float(data))
 
