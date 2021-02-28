@@ -23,6 +23,10 @@ class BasePythonPlugin(abc.AbstractPythonPlugin):
     setup_name: Optional[str]
     setup_vars: Dict[str, str]
     _setup_config: Optional[str]
+    phony_targets: List[str] = []
+    make_name: Optional[str] = None
+    make_vars: Dict[str, str] = {}
+    _make_targets: Optional[str] = None
     file_location: Optional[str]
     rendering_params: Dict[str, str]
 
@@ -63,3 +67,14 @@ class BasePythonPlugin(abc.AbstractPythonPlugin):
         self._setup_config = setup_template.render(**self.setup_vars) + '\n'
 
         return self._setup_config
+
+    def make_targets(self) -> Optional[str]:
+        if self.make_name is None:
+            return None
+        if self._make_targets is not None:
+            return self._make_targets
+        self._make_targets = '.PHONY: ' + ' '.join(self.phony_targets) + '\n'
+        make_template = self.env.get_template(f'{self.make_name}-makefile.jinja2')
+        self._make_targets += make_template.render(**self.make_vars) + '\n'
+
+        return self._make_targets

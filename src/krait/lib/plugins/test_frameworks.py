@@ -17,6 +17,7 @@ from pathlib import Path
 
 class BaseTestFramework(bp.BasePythonPlugin):
     project_framework: pf.BaseProjectFramework
+    phony_targets = ['test']
 
     def __init__(
         self,
@@ -25,7 +26,6 @@ class BaseTestFramework(bp.BasePythonPlugin):
         file_renderer: rndr.FileRenderer,
         dir_renderer: rndr.DirectoryRenderer
     ):
-
         super().__init__(project_name, file_renderer, dir_renderer)
         self.project_framework = project_framework
         self.name = ''
@@ -50,6 +50,7 @@ class Pytest(BaseTestFramework):
         self.setup_vars = {'project_framework': project_framework.name}
         self.file_location = 'tests'
         self.file_name = project_framework.test_file
+        self.make_name = 'pytest'
 
 
 class NoTesting(BaseTestFramework):

@@ -10,7 +10,7 @@ from typing import List
 
 
 class BaseTypeChecker(bp.BasePythonPlugin):
-    pass
+    phony_targets = ['check']
 
 
 class MyPy(BaseTypeChecker):
@@ -24,6 +24,7 @@ class MyPy(BaseTypeChecker):
     ):
         super().__init__(project_name, file_renderer, dir_renderer)
         self.setup_name = 'mypy'
+        self.make_name = 'mypy'
 
 
 class NoTypeChecker(BaseTypeChecker):

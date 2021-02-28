@@ -14,6 +14,7 @@ from typing import (
 
 class BaseLinter(bp.BasePythonPlugin):
     configurations: Dict[str, str]
+    phony_targets = ['lint', 'fmt']
 
 
 class Flake8(BaseLinter):
@@ -27,6 +28,7 @@ class Flake8(BaseLinter):
     ):
         super().__init__(project_name, file_renderer, dir_renderer)
         self.setup_name = 'flake8'
+        self.make_name = 'flake8'
 
 
 class NoLinter(BaseLinter):

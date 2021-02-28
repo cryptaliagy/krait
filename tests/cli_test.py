@@ -60,6 +60,7 @@ common_files: List[str] = [
     'setup.cfg',
     'setup.py',
     'MANIFEST.in',
+    'Makefile',
 ]
 
 expected_files_for_config: Dict[str, List[str]] = {
@@ -140,6 +141,51 @@ def test_cli_create(mock_configs, mock_update, mock_templates, cmd: str):
                 assert not (project_path / file_name[1:]).exists()
             else:
                 assert (project_path / file_name).exists()
+
+
+makefile_sections: Dict[str, str] = {
+    'pytest': '.PHONY: test\ntest :\n\tpytest',
+    'flake8': '.PHONY: lint fmt\nlint :\n\tflake8',
+    'mypy': '.PHONY: check\ncheck :\n\tmypy',
+}
+
+expected_makefile_sections: Dict[str, List[str]] = {
+    '-a none -l none -c none -p library -t none': [],
+    '-a none -l flake8 -c none -p library -t none': ['flake8'],
+    '-a none -l none -c mypy -p library -t none': ['mypy'],
+    '-a none -l none -c none -p library -t pytest': ['pytest'],
+    '-a none -l none -c mypy -p library -t pytest': ['mypy', 'pytest'],
+    '-a none -l flake8 -c none -p library -t pytest': ['flake8', 'pytest'],
+    '-a none -l flake8 -c mypy -p library -t none': ['flake8', 'mypy'],
+    '-a none -l flake8 -c mypy -p library -t pytest': ['flake8', 'mypy', 'pytest'],
+}
+
+
+@pytest.mark.cli
+@pytest.mark.parametrize('cmd', [*expected_makefile_sections.keys()])
+def test_makefile(cmd: str):
+    runner = CliRunner()
+    with runner.isolated_filesystem() as fs:
+        runner.invoke(cli.cli, [
+            'create',
+            '-n',
+            'natalia',
+            '-e',
+            'email',
+            *cmd.split(),
+            '-s',
+            'project',
+        ])
+        project_path = Path(f'{fs}/project')
+        makefile = project_path / 'Makefile'
+        assert makefile.exists()
+        with open(makefile, 'r') as f:
+            s = f.read().strip()
+        for section, content in makefile_sections.items():
+            if section in expected_makefile_sections[cmd]:
+                assert content in s
+            else:
+                assert content not in s
 
 
 @pytest.mark.cli
