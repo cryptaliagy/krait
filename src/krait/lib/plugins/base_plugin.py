@@ -73,7 +73,7 @@ class BasePythonPlugin(abc.AbstractPythonPlugin):
             return None
         if self._make_targets is not None:
             return self._make_targets
-        self._make_targets = '.PHONY: ' + ' '.join(self.phony_targets) + '\n'
+        self._make_targets = f'.PHONY: {" ".join(self.phony_targets)}\n'
         make_template = self.env.get_template(f'{self.make_name}-makefile.jinja2')
         self._make_targets += make_template.render(**self.make_vars) + '\n'
 
