@@ -91,3 +91,25 @@ class SetupConfig(File):
                 result.append(config)
 
         return '\n'.join(result)
+
+
+class MakeFile(File):
+    plugins: List[abc.AbstractPlugin]
+
+    def __init__(
+        self,
+        *plugins: abc.AbstractPlugin
+    ):
+        self.path = 'Makefile'
+        self.plugins = list(plugins)
+
+    @property
+    def contents(self) -> str:
+        result = []
+
+        for plugin in self.plugins:
+            targets = plugin.make_targets()
+            if targets:
+                result.append(targets)
+
+        return '\n\n'.join(result)

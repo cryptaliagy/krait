@@ -74,6 +74,9 @@ class AbstractPlugin:
     def render_file(self):
         raise NotImplementedError()
 
+    def make_targets(self) -> Optional[str]:
+        raise NotImplementedError()
+
 
 class AbstractVCS(AbstractPlugin):
     def initialize(self, project_path: Path):

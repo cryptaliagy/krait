@@ -261,5 +261,3 @@
 * Dev: setup of project repository. [Natalia Maximo]
 
 * Initial commit. [Natalia Maximo]
-
-

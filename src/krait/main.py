@@ -49,10 +49,16 @@ def create(
         test_framework,
     )
     manifest_file = kf.File('MANIFEST.in', 'graft src')
+    makefile = kf.MakeFile(
+        linter,
+        type_checker,
+        test_framework,
+    )
 
     files.add_file(readme_file)
     files.add_file(setup_script)
     files.add_file(setup_config)
+    files.add_file(makefile)
     files.add_file(manifest_file)
     directories.create_all()
     files.write_all()
