@@ -22,7 +22,7 @@ pyflakes==2.2.0
 pyparsing==2.4.7
 pytest==5.4.3
 pytest-cov==2.10.1
-PyYAML==5.3.1
+PyYAML==5.4
 six==1.15.0
 toml==0.10.2
 typed-ast==1.4.1
