@@ -1,0 +1,57 @@
+name: test
+
+on:
+  workflow_call:
+    inputs:
+      operating_system:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ${{ inputs.operating_system }}
+    strategy:
+      matrix:
+        python: ['3.7', '3.8', '3.9', '3.10']
+    name: Testing ${{ github.repository }} with Python ${{ matrix.python }} on ${{ inputs.operating_system }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install dependencies and script
+        run: pip install -e .[tests]
+
+      - name: Lint with flake8
+        run: flake8
+      - name: Run static type analyzer
+        run: mypy
+
+      - name: Test with pytest
+        run: pytest tests/
+
+      - name: Ensure config directory is clean
+        run: krait reset
+
+      - name: Create new krait click project
+        run: krait --skip-config create -n 'name' -e 'email' -s cli_project
+
+      - name: Install & test newly created project
+        run: |
+          cd cli_project
+          pip install -e .[tests]
+          cli_project --help
+          pytest
+          cd ..
+
+      - name: Create new krait lib project
+        run: krait create -n 'name' -e 'email' -p library -s library_project
+
+      - name: Install & test newly created project
+        run: |
+          cd library_project
+          pip install -e .[tests]
+          pytest
+          cd ..

@@ -1,13 +1,27 @@
-name: release
+name: pipeline
 
-on:
-  push:
-    branches:
-      - master
+on: [push]
 
 jobs:
+  build-ubuntu:
+    uses: ./.github/workflows/test.yaml
+    with:
+      operating_system: ubuntu-latest
+
+  build-macos:
+    uses: ./.github/workflows/test.yaml
+    with:
+      operating_system: macos-latest
+
+  build-windows:
+    uses: ./.github/workflows/test.yaml
+    with:
+      operating_system: windows-latest
+
+
   version-check:
     runs-on: ubuntu-latest
+    needs: [build-ubuntu, build-macos, build-windows]
     name: Verify version has been increased
     outputs:
       run_deploy: ${{ steps.verify.outputs.run_deploy }}
@@ -25,62 +39,14 @@ jobs:
         id: verify
         run: echo "::set-output name=run_deploy::$(python scripts/version_verification.py $(python scripts/extract_version.py) $(cat VERSION))"
 
-  build:
-    needs: version-check
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        python: ['3.6', '3.7', '3.8', '3.9']
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    name: Testing krait with python ${{ matrix.python }}
-    if: ${{ needs.version-check.outputs.run_deploy == 'yes' && github.ref == 'refs/heads/master' }}
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-
-      - name: Install dependencies
-        run: pip install .[tests]
-
-      - name: Lint with flake8
-        run: flake8
-
-      - name: Type check with mypy
-        run: mypy
-
-      - name: Test with pytest
-        run: pytest
-
-      - name: Ensure config directory is clean
-        run: krait reset
-
-      - name: Create new krait click project
-        run: krait --skip-config create -n 'name' -e 'email' -s project
-
-      - name: Install & test newly created project
-        run: |
-          cd project
-          pip install -e .[tests]
-          project --help
-          pytest
-
-      - name: Return to parent directory
-        run: cd ..
-
-      - name: Create new krait lib project
-        run: krait create -n 'name' -e 'email' -p library -s lib-project
-
-      - name: Install & test newly created project
-        run: |
-          cd project
-          pip install -e .[tests]
-          pytest
   release:
-    needs: build
+    needs: version-check
     runs-on: ubuntu-latest
+    environment:
+      name: deployment
+      url: https://pypi.org/project/krait/
     name: Releasing package
+    if: ${{ needs.version-check.outputs.run_deploy == 'yes' && github.ref_name == 'master' }}
     env:
       TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
@@ -116,7 +82,7 @@ jobs:
         run: git pull --tags
 
       - name: Generate full changelog
-        run: gitchangelog | sed "s/(unreleased)/$(cat VERSION)/" > CHANGELOG.md
+        run: gitchangelog | sed "s/(unreleased)/$(cat VERSION) ($(date -f %Y-%m-%d))/" > CHANGELOG.md
 
       - name: Make commit for auto-generated changelog
         uses: EndBug/add-and-commit@v4
@@ -127,7 +93,9 @@ jobs:
           message: '!gitchangelog'
 
       - name: Generate version changelog for release
-        run: gitchangelog $previous_tag..HEAD | sed "s/## (unreleased)/Krait v$(cat VERSION)/" > version_changelog.md
+        run: |
+          gitchangelog $previous_tag..HEAD | sed "s/## (unreleased)/Krait v$(cat VERSION)/" > version_changelog.md
+
 
       - name:  Create Github release & upload files
         env:

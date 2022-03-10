@@ -82,9 +82,14 @@ canonical_name = {
 def prompt_if_necessary(ctx, param, val):
     if ctx.obj['suppress']:
         return val or ctx.obj[param.name]
-    param.default = ctx.obj[param.name]
-    param.prompt = canonical_name[param.name]
-    return param.prompt_for_value(ctx)
+    name = canonical_name[param.name]
+
+    return click.prompt(
+        name,
+        default=ctx.obj[param.name],
+        type=param.type,
+        show_choices=True
+    )
 
 
 def fail_if_suppress(ctx, param, val):
@@ -99,8 +104,8 @@ def fail_if_suppress(ctx, param, val):
             f'{param.name} must be specified when using --suppress-interactive'
         )
     if val is None and ctx.obj[f'require_{param.name}'] and default_val is None:
-        param.prompt = param.name.replace('_', ' ').capitalize()
-        return param.prompt_for_value(ctx)
+        prompt = param.name.replace('_', ' ').capitalize()
+        return click.prompt(prompt, type=param.type)
 
     return val or default_val
 
@@ -385,7 +390,7 @@ def set_default(**kwargs: Optional[str]):
 
 
 @click.command('link')
-@click.argument('link', type=click.Choice(help_links.keys()))
+@click.argument('link', type=click.Choice(list(help_links.keys())))
 def launch_help(link):
     '''
     Launches the specified help site
@@ -601,4 +606,4 @@ cli.add_command(update)  # pragma: no cover
 cli.add_command(reset)  # pragma: no cover
 
 if __name__ == '__main__':  # pragma: no cover
-    cli()
+    cli()  # type: ignore
