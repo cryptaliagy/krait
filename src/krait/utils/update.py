@@ -3,8 +3,9 @@ import subprocess
 import sys
 import os
 import site
-import re
+import json
 
+from urllib import request
 from datetime import datetime
 from pathlib import Path
 
@@ -86,21 +87,24 @@ def run_pip(cmd: str) -> str:
 
 def check_for_update() -> str:
     '''
-    Runs a pip search command for the krait package and checks to see
-    if the 'LATEST' tag is there. Should only affect packages with version
-    smaller than most recently released.
+    Queries the Github releases API to get the latest Krait release.
+
+    If a newer release exists, return the version. Otherwise, return
+    the empty string
     '''
     try:
-        o = run_pip('--timeout 3 --retries 0 search krait')
+        api_data = request.urlopen(
+            'https://api.github.com/repos/taliamax/krait/releases/latest'
+        ).read()
 
-        pattern = r'LATEST:\s+(\d+\.\d+(\.\d+)?)'
-        installed_pattern = r'INSTALLED:\s+(\d+\.\d+(\.\d+)?)'
-        m = re.search(pattern, o)
-        installed = re.search(installed_pattern, o)
-        if m and installed:
-            if installed.group(1) == m.group(1):
-                return ''
-            return m.group(1)
+        json_data = json.loads(api_data)
+        tag_version = json_data['tag_name']
+        o = run_pip('show krait')
+
+        if tag_version in o:
+            return ''
+        return tag_version
+
     except Exception:
         pass
     return ''
