@@ -41,7 +41,7 @@ jobs:
         run: pip install --upgrade pip
 
       - name: Install dependencies and script
-        run: pip install -r requirements.txt -r test-requirements.txt -e .
+        run: pip install -e .[tests]
 
       - name: Lint with flake8
         run: flake8

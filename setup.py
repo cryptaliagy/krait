@@ -21,7 +21,7 @@ setup(
         'src'
     ),
     extras_require={
-        'tests': ['pytest-cov', 'flake8', 'mypy', 'pytest'],
+        'tests': ['pytest-cov', 'flake8', 'mypy', 'pytest', 'types-setuptools'],
     },
     package_dir={'': 'src'},
     include_package_data=True,
