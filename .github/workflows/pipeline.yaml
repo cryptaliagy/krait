@@ -42,8 +42,11 @@ jobs:
   release:
     needs: version-check
     runs-on: ubuntu-latest
+    environment:
+      name: deployment
+      url: https://pypi.org/project/krait/
     name: Releasing package
-    if: ${{ needs.version-check.outputs.run_deploy == 'yes' && github.ref == 'refs/heads/master' }}
+    if: ${{ needs.version-check.outputs.run_deploy == 'yes' }}
     env:
       TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
