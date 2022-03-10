@@ -2,112 +2,67 @@ name: pipeline
 
 on: [push]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build-ubuntu:
+  set-python:
+    runs-on: ubuntu-latest
+    outputs:
+      python-version: '3.9'
+    steps:
+      - name: Set needed elements as outputs
+        run: echo "setting up needed elements"
+
+
+  test-ubuntu:
     uses: ./.github/workflows/test.yaml
     with:
       operating_system: ubuntu-latest
 
-  build-macos:
+  test-macos:
     uses: ./.github/workflows/test.yaml
     with:
       operating_system: macos-latest
 
-  build-windows:
+  test-windows:
     uses: ./.github/workflows/test.yaml
     with:
       operating_system: windows-latest
 
 
   version-check:
-    runs-on: ubuntu-latest
-    needs: [build-ubuntu, build-macos, build-windows]
-    name: Verify version has been increased
-    outputs:
-      run_deploy: ${{ steps.verify.outputs.run_deploy }}
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
+    needs: [test-ubuntu, test-macos, test-windows, set-python]
+    uses: ./.github/workflows/version-check.yaml
+    if: github.ref_name == 'master'
+    with:
+      python-version: ${{ needs.set-python.outputs.python-version }}
 
-      - name: Install necessary package for scripts to run
-        run: pip install packaging
-
-      - name: Verify that the version has been increased
-        id: verify
-        run: echo "::set-output name=run_deploy::$(python scripts/version_verification.py $(python scripts/extract_version.py) $(cat VERSION))"
-
-  code_analysis:
-    needs: [build-ubuntu, build-macos, build-windows]
+  code-analysis:
+    needs: test-ubuntu
     uses: ./.github/workflows/codeql-analysis.yml
 
-  release:
-    needs: [version-check, code_analysis]
-    runs-on: ubuntu-latest
-    environment:
-      name: deployment
-      url: https://pypi.org/project/krait/
-    name: Releasing package
-    if: ${{ needs.version-check.outputs.run_deploy == 'yes' && github.ref_name == 'master' }}
-    env:
-      TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-      TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Needed for changelog generation
-      - name: Setup python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
+  build-package:
+    needs: [version-check, code-analysis]
+    if: needs.version-check.outputs.run_deploy == 'yes'
+    uses: ./.github/workflows/build-package.yaml
+    with:
+      python-version: ${{ needs.set-python-outputs.python-version }}
 
-      - name: Install release packages
-        run: pip install wheel gitchangelog pystache
+  build-changelog:
+    needs: [version-check]
+    if: needs.version-check.outputs.run_deploy == 'yes'
+    uses: ./.github/workflows/build-changelog.yaml
+    with:
+      python-version: ${{ needs.set-python-outputs.python-version }}
 
-      - name: Ensure clean dist/ and build/ folders
-        run: rm -rf dist build
-        continue-on-error: true
+  release-github:
+    needs: [build-changelog, build-package]
+    uses: ./.github/workflows/release-github.yaml
 
-      - name: Build release
-        run: python setup.py sdist bdist_wheel
-
-      - name: Extract last version tag
-        run: echo "previous_tag=$(python scripts/extract_version.py)" >> $GITHUB_ENV
-
-      - name: Extract wheel artifact name
-        run: echo "wheel_name=$(echo dist/*.whl)" >> $GITHUB_ENV
-
-      - name: Extract tar.gz artifact name
-        run: echo "tar_name=$(echo dist/*.tar.gz)" >> $GITHUB_ENV
-
-      - name: Pull tags from the repo
-        run: git pull --tags
-
-      - name: Generate full changelog
-        run: gitchangelog | sed "s/(unreleased)/$(cat VERSION) ($(date -f %Y-%m-%d))/" > CHANGELOG.md
-
-      - name: Make commit for auto-generated changelog
-        uses: EndBug/add-and-commit@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          add: 'CHANGELOG.md'
-          message: '!gitchangelog'
-
-      - name: Generate version changelog for release
-        run: |
-          gitchangelog $previous_tag..HEAD | sed "s/## (unreleased)/Krait v$(cat VERSION)/" > version_changelog.md
-
-
-      - name:  Create Github release & upload files
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: hub release create -a $wheel_name -a $tar_name -F version_changelog.md $(cat VERSION)
-
-      - name: Install Twine
-        run: pip install twine
-
-      - name: Release package
-        run: twine upload dist/*
+  release-pypi:
+    needs: [build-package]
+    uses: ./.github/workflows/release-pypi.yaml
+    with:
+      python-version: ${{ needs.set-python-outputs.python-version }}

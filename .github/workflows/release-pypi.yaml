@@ -1,0 +1,35 @@
+name: release_github
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        required: true
+        type: string
+
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: deployment
+      url: https://pypi.org/project/krait/
+    env:
+      TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+      TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+    steps:
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Install twine for upload
+        run: pip install twine
+
+      - name: Download package
+        uses: actions/download-artifact@v3
+        with:
+          name: package-artifacts
+
+      - name: Create release
+        run: twine upload dist/*

@@ -1,0 +1,24 @@
+name: release_github
+
+on:
+  workflow_call:
+
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download changelog
+        uses: actions/download-artifact@v3
+        with:
+          name: version-changelog
+      - name: Download package
+        uses: actions/download-artifact@v3
+        with:
+          name: package-artifacts
+
+      - name: Create release
+        run: |
+          gh release create $(cat VERSION) \
+            -F version_changelog.md \
+            ./dist/*.tar.gz ./dist/*.whl
