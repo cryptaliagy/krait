@@ -8,7 +8,6 @@ concurrency:
 
 env:
   PYTHON_VERSION: '3.9'
-  MAIN_GH_BRANCH: 'master'
 
 jobs:
   test-ubuntu:
@@ -30,6 +29,7 @@ jobs:
   version-check:
     needs: [test-ubuntu, test-macos, test-windows]
     uses: ./.github/workflows/version-check.yaml
+    if: github.ref_name == 'master'
     with:
       python-version: $PYTHON_VERSION
 
@@ -39,14 +39,14 @@ jobs:
 
   build-package:
     needs: [version-check, code-analysis]
-    if: ${{ needs.version-check.outputs.run_deploy == 'yes' && github.ref_name == env.MAIN_GH_BRANCH }}
+    if: needs.version-check.outputs.run_deploy == 'yes'
     uses: ./.github/workflows/build-package.yaml
     with:
       python-version: $PYTHON_VERSION
 
   build-changelog:
     needs: [version-check]
-    if: ${{ needs.version-check.outputs.run_deploy == 'yes' && github.ref_name == env.MAIN_GH_BRANCH }}
+    if: needs.version-check.outputs.run_deploy == 'yes'
     uses: ./.github/workflows/build-changelog.yaml
     with:
       python-version: $PYTHON_VERSION
