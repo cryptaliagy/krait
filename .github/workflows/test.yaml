@@ -18,9 +18,6 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: Ensure latest pip
-        run: pip install --upgrade pip
-
       - name: Install dependencies and script
         run: pip install -e .[tests]
 
