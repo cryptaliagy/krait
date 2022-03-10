@@ -1,0 +1,42 @@
+name: build_changelog
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        type: string
+        required: true
+
+
+jobs:
+  build_changelog:
+    runs-on: ubuntu-latest
+    name: Build changelog
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Pull existing tags
+        run: git pull --tags
+
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Install changelog packages
+        run: pip install gitchangelog pystache
+
+      - name: Extract last version tag
+        run: echo "previous_tag=$(git tag -l | sort -V | tail -1)" >> $GITHUB_ENV
+
+      - name: Generate version changelog for release
+        run: |
+          gitchangelog $previous_tag..HEAD | sed "s/## (unreleased)/Krait v$(cat VERSION)/" > version_changelog.md
+
+      - name: Upload changelog artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: version-changelog
+          path: version_changelog.md
