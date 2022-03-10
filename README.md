@@ -1,7 +1,6 @@
 # Krait – CLI for setting up new python projects
 
-[![Build status badge](https://img.shields.io/github/workflow/status/taliamax/krait/build)](https://github.com/taliamax/krait/actions?query=workflow%3Abuild)
-[![Release status badge](https://img.shields.io/github/workflow/status/taliamax/krait/release?label=release)](https://github.com/taliamax/krait/actions?query=workflow%3Arelease)
+[![Pipeline status badge](https://img.shields.io/github/workflow/status/taliamax/krait/release?label=release)](https://github.com/taliamax/krait/actions?query=workflow%3Apipeline)
 [![PyPI version badge](https://img.shields.io/pypi/v/krait)](https://pypi.org/project/krait/)
 [![PyPI Status Badge](https://img.shields.io/pypi/status/krait)](https://pypi.org/project/krait/)
 
