@@ -2,10 +2,6 @@ name: test
 
 on:
   workflow_call:
-    inputs:
-      operating_system:
-        required: true
-        type: string
 
 jobs:
   build:

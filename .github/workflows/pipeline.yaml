@@ -28,7 +28,7 @@ jobs:
         run: echo "::set-output name=run_deploy::$(python scripts/version_verification.py $(python scripts/extract_version.py) $(cat VERSION))"
 
   release:
-    needs: build
+    needs: version-check
     runs-on: ubuntu-latest
     name: Releasing package
     if: ${{ needs.version-check.outputs.run_deploy == 'yes' && github.ref == 'refs/heads/master' }}
