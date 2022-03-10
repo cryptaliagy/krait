@@ -6,17 +6,17 @@ jobs:
   build-ubuntu:
     uses: ./.github/workflows/test.yaml
     with:
-      operating_sytem: ubuntu-latest
+      operating_system: ubuntu-latest
 
   build-macos:
     uses: ./.github/workflows/test.yaml
     with:
-      operating_sytem: macos-latest
+      operating_system: macos-latest
 
   build-windows:
     uses: ./.github/workflows/test.yaml
     with:
-      operating_sytem: windows-latest
+      operating_system: windows-latest
 
 
   version-check:
