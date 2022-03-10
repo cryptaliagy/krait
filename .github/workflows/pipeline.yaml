@@ -46,7 +46,7 @@ jobs:
       name: deployment
       url: https://pypi.org/project/krait/
     name: Releasing package
-    if: ${{ needs.version-check.outputs.run_deploy == 'yes' }}
+    if: ${{ needs.version-check.outputs.run_deploy == 'yes' && github.ref_name == 'master' }}
     env:
       TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
