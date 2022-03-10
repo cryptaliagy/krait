@@ -99,7 +99,7 @@ def check_for_update() -> str:
 
         json_data = json.loads(api_data)
         tag_version = json_data['tag_name']
-        o = run_pip('show krait | grep Version')
+        o = run_pip('show krait')
 
         if tag_version in o:
             return ''
