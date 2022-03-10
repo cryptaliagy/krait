@@ -39,7 +39,7 @@ jobs:
         run: |
           cd cli_project
           pip install -e .[tests]
-          project --help
+          cli_project --help
           pytest
           cd ..
 
