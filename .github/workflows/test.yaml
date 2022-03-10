@@ -2,15 +2,18 @@ name: test
 
 on:
   workflow_call:
+    inputs:
+      operating_sytem:
+        required: true
+        type: string
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ $inputs.operating_system }}
     strategy:
       matrix:
-        os: ['ubuntu-latest', 'windows-latest', 'macos-latest']
         python: ['3.7', '3.8', '3.9', '3.10']
-    name: Testing ${{ github.repository }} with Python ${{ matrix.python }} on ${{ matrix.os }}
+    name: Testing ${{ github.repository }} with Python ${{ matrix.python }} on ${{ $inputs.operating_system }}
     steps:
       - uses: actions/checkout@v2
       - name: Setup python

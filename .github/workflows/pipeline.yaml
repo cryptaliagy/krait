@@ -3,12 +3,25 @@ name: pipeline
 on: [push]
 
 jobs:
-  build:
+  build-ubuntu:
     uses: ./.github/workflows/test.yaml
+    with:
+      operating_sytem: ubuntu-latest
+
+  build-macos:
+    uses: ./.github/workflows/test.yaml
+    with:
+      operating_sytem: macos-latest
+
+  build-windows:
+    uses: ./.github/workflows/test.yaml
+    with:
+      operating_sytem: windows-latest
+
 
   version-check:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build-ubuntu, build-macos, build-windows]
     name: Verify version has been increased
     outputs:
       run_deploy: ${{ steps.verify.outputs.run_deploy }}
