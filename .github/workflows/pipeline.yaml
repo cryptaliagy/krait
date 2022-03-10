@@ -4,16 +4,8 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    name: Testing ${{ github.repository }} with Python ${{ matrix.python }}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./.github/workflows/test.yaml
-        with:
-          operating_system: ${{ matrix.os }}
+    name: Build & Test the application
+    uses: ./.github/workflows/test.yaml
 
   version-check:
     runs-on: ubuntu-latest
