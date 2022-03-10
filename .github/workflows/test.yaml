@@ -33,26 +33,22 @@ jobs:
         run: krait reset
 
       - name: Create new krait click project
-        run: krait --skip-config create -n 'name' -e 'email' -s project
+        run: krait --skip-config create -n 'name' -e 'email' -s cli_project
 
       - name: Install & test newly created project
         run: |
-          cd project
+          cd cli_project
           pip install -e .[tests]
           project --help
           pytest
-
-      - name: Clean up new project
-        run: cd .. & rm -rf project
+          cd ..
 
       - name: Create new krait lib project
-        run: krait create -n 'name' -e 'email' -p library -s project
+        run: krait create -n 'name' -e 'email' -p library -s library_project
 
       - name: Install & test newly created project
         run: |
-          cd project
+          cd library_project
           pip install -e .[tests]
           pytest
-
-      - name: Clean up new project
-        run: cd .. & rm -rf project
+          cd ..
