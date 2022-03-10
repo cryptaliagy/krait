@@ -14,8 +14,7 @@ jobs:
     name: Build package artifacts
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Needed for changelog generation
+
       - name: Setup python
         uses: actions/setup-python@v2
         with:
