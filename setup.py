@@ -27,7 +27,7 @@ setup(
     include_package_data=True,
     version=version,
     install_requires=[
-        'click', 'jinja2', 'pydeepmerge', 'gitpython'
+        'click>=8.0', 'jinja2', 'pydeepmerge', 'gitpython'
     ],
     python_requires='>=3.6',
     keywords='cli project startup',
