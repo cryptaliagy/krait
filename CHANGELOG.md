@@ -1,7 +1,61 @@
 # Changelog
 
 
-## 0.6.2
+## 0.6.3 ()
+
+### New
+
+* Added Makefile generation. [andrewnags]
+
+  When creating a project, generate a Makefile with targets for the
+  - linter/formatter
+  - type checker
+  - test framework
+  so that the user can use the same commands uniformly across frameworks.
+
+  For example, a user wouldn't need to know if a krait-generated
+  project used `unittest`, `pytest`, `nose`, etc. -- the user need only
+  type `make test` at the command prompt and the generated target will
+  perform the appropriate action.
+
+### Fix
+
+* Prompting allows use of defaults (#14) [Natalia Maximo]
+
+### Other
+
+* Add code analysis. [Natalia Maximo]
+
+* Merge pull request #11 from taliamax/dependabot/pip/py-1.10.0. [Natalia Maximo]
+
+  build(deps): bump py from 1.8.1 to 1.10.0
+
+* Build(deps): bump py from 1.8.1 to 1.10.0. [dependabot[bot]]
+
+  Bumps [py](https://github.com/pytest-dev/py) from 1.8.1 to 1.10.0.
+  - [Release notes](https://github.com/pytest-dev/py/releases)
+  - [Changelog](https://github.com/pytest-dev/py/blob/master/CHANGELOG.rst)
+  - [Commits](https://github.com/pytest-dev/py/compare/1.8.1...1.10.0)
+
+* Merge pull request #10 from taliamax/dependabot/pip/pyyaml-5.4. [Natalia Maximo]
+
+  build(deps): bump pyyaml from 5.3.1 to 5.4
+
+* Build(deps): bump pyyaml from 5.3.1 to 5.4. [dependabot[bot]]
+
+  Bumps [pyyaml](https://github.com/yaml/pyyaml) from 5.3.1 to 5.4.
+  - [Release notes](https://github.com/yaml/pyyaml/releases)
+  - [Changelog](https://github.com/yaml/pyyaml/blob/master/CHANGES)
+  - [Commits](https://github.com/yaml/pyyaml/compare/5.3.1...5.4)
+
+* Merge pull request #8 from taliamax/feat/make. [andrewnags]
+
+  Add Makefile generation during project creation
+
+* Fix string formatting. [andrewnags]
+
+
+## 0.6.2 (2021-01-26)
 
 ### New
 
@@ -261,3 +315,5 @@
 * Dev: setup of project repository. [Natalia Maximo]
 
 * Initial commit. [Natalia Maximo]
+
+
