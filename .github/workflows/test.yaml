@@ -3,13 +3,13 @@ name: test
 on:
   workflow_call:
     inputs:
-      operating_sytem:
+      operating_system:
         required: true
         type: string
 
 jobs:
   build:
-    runs-on: ${{ $inputs.operating_system }}
+    runs-on: ${{ $input.operating_system }}
     strategy:
       matrix:
         python: ['3.7', '3.8', '3.9', '3.10']
