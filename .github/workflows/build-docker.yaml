@@ -24,13 +24,14 @@ jobs:
       - name: Ensure config directory is clean
         run: krait reset
 
-      - name: Create new krait lib project
-        run: krait create -n 'name' -e 'email' -p flask -s flask_project
+      - name: Create new krait flask project
+        run: krait --skip-config create -n 'name' -e 'email' -p flask -s flask_project
 
       - name: Install & test newly created project
         run: |
           cd flask_project
           make install
+          make test
 
       - name: Build docker container for flask app
         run: make build
