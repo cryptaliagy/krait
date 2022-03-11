@@ -144,9 +144,9 @@ def test_cli_create(mock_configs, mock_update, mock_templates, cmd: str):
 
 
 makefile_sections: Dict[str, str] = {
-    'pytest': '.PHONY: test\ntest :\n\tpytest',
-    'flake8': '.PHONY: lint fmt\nlint :\n\tflake8',
-    'mypy': '.PHONY: check\ncheck :\n\tmypy',
+    'pytest': '.PHONY: test\ntest:  ## Runs the test suite\n\tpytest',
+    'flake8': '.PHONY: lint fmt\nlint:  ## Runs the linter\n\tflake8',
+    'mypy': '.PHONY: check\ncheck:  ## Runs the static type checker\n\tmypy',
 }
 
 expected_makefile_sections: Dict[str, List[str]] = {
