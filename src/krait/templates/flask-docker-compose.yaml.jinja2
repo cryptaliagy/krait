@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  {{ project_name }}:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: {{ project_name }}
+    volumes:
+      - ..:/app
+    env_file:
+      - ../.env
+    healthcheck:
+      test: curl http://localhost/heartbeat || exit 1
+      retries: 3
+      interval: 5m
+      start_period: 30s
+      timeout: 30s
+    ports:
+        - 80:80

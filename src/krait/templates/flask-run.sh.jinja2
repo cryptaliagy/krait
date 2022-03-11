@@ -1,0 +1,9 @@
+#!/bin/bash
+
+source .env
+
+if [ "$FLASK_ENV" == "development" ]; then
+    gunicorn --bind "$FLASK_RUN_HOST:$FLASK_RUN_PORT" --worker-connections 2 --threads 4 --reload '{{ project_name|replace('-', '_') }}.app:create_app()';
+else
+    gunicorn --bind "$FLASK_RUN_HOST:$FLASK_RUN_PORT" -w 3 --max-requests 1000 --threads 4 '{{ project_name|replace('-', '_') }}.app:create_app()';
+fi

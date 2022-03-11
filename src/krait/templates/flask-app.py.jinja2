@@ -1,0 +1,64 @@
+from typing import (
+    Optional,
+)
+
+from flask import (
+    Flask,
+    request
+)
+
+from {{ project_name|replace('-', '_') }}.routes import (
+    root
+)
+
+
+def create_app(conf: Optional[str] = None) -> Flask:
+    '''
+    Creates and configures a new Flask app instance.
+
+    Args:
+        conf: The configuration object path, or None to use the default one
+
+    Returns:
+        A configured Flask app
+    '''
+
+    app = Flask(__name__)
+
+    if conf is None:
+        app.config.from_object(
+            '{{ project_name|replace('-','_') }}.config.EnvironmentConfig'
+        )
+    else:
+        app.config.from_object(conf)
+
+    configure_app_logger(app)
+
+    # All other blueprints should have been registered
+    # by the root blueprint first, so this is the only
+    # blueprint that needs to be registered
+    app.register_blueprint(root)
+
+    # Very basic logging of which route was hit
+
+    @app.before_request
+    def _():
+        app.logger.info(
+            'Hit route path %s',
+            request.path
+        )
+
+    return app
+
+
+def configure_app_logger(app: Flask):
+    '''
+    Configures the application logger
+
+    Args:
+        app: The base flask application to be modified
+    '''
+
+    # Add your logger configuration here
+
+    # logger = app.logger

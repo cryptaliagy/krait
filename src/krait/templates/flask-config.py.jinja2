@@ -1,0 +1,14 @@
+'''
+Defines environment configurations for the application.
+
+All properties of the EnvironmentConfig class are retrieved
+from environment variables, which prevents them from getting committed
+to the repository.
+'''
+
+import os
+
+
+class EnvironmentConfig:
+    FLASK_ENV: str = os.environ.get('FLASK_ENV', 'development')
+    SECRET_KEY: str = os.environ.get('SECRET_KEY', 'dev')

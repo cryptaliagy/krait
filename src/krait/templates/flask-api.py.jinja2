@@ -1,0 +1,18 @@
+from flask import (
+    Blueprint,
+    jsonify,
+)
+
+
+api = Blueprint('api', __name__, url_prefix='/api')
+
+
+@api.route('/heartbeat')
+def heartbeat():
+    '''
+    Basic heartbeat endpoint to test that the route is working
+    '''
+    return jsonify(
+        ok=True,
+        msg='API for {{ project_name }} is running!'
+    )

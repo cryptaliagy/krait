@@ -12,9 +12,15 @@ from krait.utils.templates import get_env
 
 
 class File(abc.AbstractFile):
-    def __init__(self, path: Union[str, Path], *contents: str):
+    def __init__(
+        self,
+        path: Union[str, Path],
+        *contents: str,
+        executable: bool = False
+    ):
         self.path = path
         self._contents = list(contents)
+        self.executable = executable
 
     def add_content(self, content: str):
         self._contents.append(content)
@@ -35,7 +41,7 @@ class SetupScript(File):
         type_checker: abc.AbstractPythonPlugin,
         test_framework: abc.AbstractPythonPlugin,
     ):
-        self.path = 'setup.py'
+        super().__init__('setup.py')
         self.author = author or ''
         self.author_email = author_email or ''
         self.project_name = project_name
@@ -78,7 +84,7 @@ class SetupConfig(File):
         self,
         *plugins: abc.AbstractPythonPlugin
     ):
-        self.path = 'setup.cfg'
+        super().__init__('setup.cfg')
         self.plugins = list(plugins)
 
     @property
@@ -100,12 +106,16 @@ class MakeFile(File):
         self,
         *plugins: abc.AbstractPlugin
     ):
-        self.path = 'Makefile'
+        super().__init__('Makefile')
         self.plugins = list(plugins)
 
     @property
     def contents(self) -> str:
         result = []
+
+        result.append(
+            get_env().get_template('base-makefile.jinja2').render()
+        )
 
         for plugin in self.plugins:
             targets = plugin.make_targets()

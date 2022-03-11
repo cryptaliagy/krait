@@ -1,0 +1,14 @@
+install:  ## Install all dependencies locally
+	pip install -e '.[tests]'
+
+build:  ## Build the container to run the app
+	docker-compose -f docker/docker-compose.yaml build
+
+run:  ## Run the application in the container
+	docker-compose -f docker/docker-compose.yaml up
+
+run-d:  ## Run the container in detach mode
+	docker-compose -f docker/docker-compose.yaml up -d
+
+stop:  ## Stop all running containers connected to this project
+	docker-compose -f docker/docker-compose.yaml down

@@ -29,6 +29,7 @@ class AbstractObjectRenderer:
 class AbstractFile:
     path: Union[str, Path]
     _contents: List[str]
+    executable: bool
 
     def add_content(self, content: str):
         raise NotImplementedError()

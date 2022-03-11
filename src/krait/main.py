@@ -50,6 +50,7 @@ def create(
     )
     manifest_file = kf.File('MANIFEST.in', 'graft src')
     makefile = kf.MakeFile(
+        project_framework,
         linter,
         type_checker,
         test_framework,
