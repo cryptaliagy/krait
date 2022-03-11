@@ -1,0 +1,46 @@
+name: test
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Testing dockerization of flask app
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Install dependencies and script
+        run: pip install -e .
+
+      - name: Ensure config directory is clean
+        run: krait reset
+
+      - name: Create new krait lib project
+        run: krait create -n 'name' -e 'email' -p flask -s flask_project
+
+      - name: Install & test newly created project
+        run: |
+          cd flask_project
+          make install
+
+      - name: Build docker container for flask app
+        run: make build
+
+      - name: Run the container in the background
+        run: make run-d
+
+      - name: Test the heartbeat route
+        run: curl http://localhost/heartbeat
+
+      - name: Teardown container
+        if: ${{ always() }}
+        run: make stop

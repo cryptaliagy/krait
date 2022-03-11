@@ -39,6 +39,12 @@ jobs:
     with:
       python-version: ${{ needs.set-python.outputs.python-version }}
 
+  build-container:
+    needs: [test-ubuntu, set-python]
+    uses: ./.github/workflows/build-docker.yaml
+    with:
+      python-version: ${{ needs.set-python-outputs.python-version }}
+
   code-analysis:
     needs: test-ubuntu
     uses: ./.github/workflows/codeql-analysis.yml
