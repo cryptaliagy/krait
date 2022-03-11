@@ -34,14 +34,14 @@ jobs:
           make test
 
       - name: Build docker container for flask app
-        run: make build
+        run: cd flask_project && make build
 
       - name: Run the container in the background
-        run: make run-d
+        run: cd flask_project && make run-d
 
       - name: Test the heartbeat route
         run: curl http://localhost/heartbeat
 
       - name: Teardown container
         if: ${{ always() }}
-        run: make stop
+        run: cd flask_project && make stop
