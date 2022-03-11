@@ -55,3 +55,13 @@ jobs:
           pip install -e .[tests]
           pytest
           cd ..
+
+      - name: Create new krait lib project
+        run: krait create -n 'name' -e 'email' -p flask -s flask_project
+
+      - name: Install & test newly created project
+        run: |
+          cd flask_project
+          pip install -e '.[tests]'
+          pytest
+          cd ..
