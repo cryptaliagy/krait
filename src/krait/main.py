@@ -28,10 +28,6 @@ def create(
     '''
     Create a new python project with the specified options
     '''
-    project_framework.render_file()
-    test_framework.render_file()
-    automation.render_file()
-
     readme_file = kf.File('README.md', f'# {project_name}')
     setup_script = kf.SetupScript(
         project_name,
@@ -61,5 +57,10 @@ def create(
     files.add_file(setup_config)
     files.add_file(makefile)
     files.add_file(manifest_file)
+
+    project_framework.render_file()
+    test_framework.render_file()
+    automation.render_file()
+
     directories.create_all()
     files.write_all()

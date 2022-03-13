@@ -196,6 +196,14 @@ class FlaskProject(BaseProjectFramework):
             )
         )
 
+        readme_file = kf.File(
+            'README.md',
+            self._get_template(
+                'readme',
+                project_name=self.project_name
+            )
+        )
+
         self.file_renderer.add_files(
             app_config,
             run_script,
@@ -206,5 +214,6 @@ class FlaskProject(BaseProjectFramework):
             env_example_file,
             requirements_file,
             dockerfile,
-            compose_file
+            compose_file,
+            readme_file
         )

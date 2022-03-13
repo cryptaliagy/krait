@@ -1,6 +1,42 @@
 from setuptools import setup, find_packages
 
 
+# Place your dependencies here
+dependencies = [
+    {%- for dependency in install_dependencies %}
+    '{{ dependency }}',
+    {%- endfor %}
+]
+
+# Optional/Extra dependencies can be added here.
+#
+# This can be a good place to add dev/test dependencies
+# so that they are tracked properly.
+
+extras = {
+    {%- if test_dependencies|length > 0 %}
+    'tests': [
+        {%- for dependency in test_dependencies %}
+        '{{ dependency }}',
+        {%- endfor %}
+    ]
+    {%- endif %}
+}
+
+test_dependencies = extras.get('tests', [])
+
+all_dependencies = set()
+
+for extra in extras:
+    for dependency in extras[extra]:
+        all_dependencies.add(dependency)
+
+# Create the 'all' category to make it easier
+# to install everything in one command, but also
+# not have to update it every time
+
+extras['all'] = [*all_dependencies]
+
 setup(
     name='{{ project_name }}',
 {%- if author != '' %}
@@ -13,11 +49,9 @@ setup(
     packages=find_packages('src'),
     package_dir={'': 'src'},
     include_package_data=True,
-    install_requires={{ install_dependencies }},
-    tests_require={{ test_dependencies }},
-    extras_require={
-        'tests': {{ test_dependencies }},
-    },
+    install_requires=dependencies,
+    tests_require=test_dependencies,
+    extras_require=extras,
 {%- if project_type == 'cli' %}
     entry_points={
         'console_scripts': ['{{project_name}} = {{ project_name|replace('-','_') }}.main:main']

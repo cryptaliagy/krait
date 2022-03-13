@@ -1,14 +1,17 @@
+COMPOSE_FILE ?= docker/docker-compose.yaml
+COMPOSE ?= docker-compose -f $(COMPOSE_FILE)
+
 install:  ## Install all dependencies locally
-	pip install -e '.[tests]'
+	pip install -e '.[all]'
 
 build:  ## Build the container to run the app
-	docker-compose -f docker/docker-compose.yaml build
+	$(COMPOSE) build
 
 run:  ## Run the application in the container
-	docker-compose -f docker/docker-compose.yaml up
+	$(COMPOSE) up
 
 run-d:  ## Run the container in detach mode
-	docker-compose -f docker/docker-compose.yaml up -d
+	$(COMPOSE) up -d
 
 stop:  ## Stop all running containers connected to this project
-	docker-compose -f docker/docker-compose.yaml down
+	$(COMPOSE) down
