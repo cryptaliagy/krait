@@ -55,54 +55,68 @@ jobs:
     with:
       operating_system: ubuntu-latest
 
-  test-macos:
-    uses: ./.github/workflows/test.yaml
-    with:
-      operating_system: macos-latest
+  # test-macos:
+  #   uses: ./.github/workflows/test.yaml
+  #   with:
+  #     operating_system: macos-latest
 
-  test-windows:
-    uses: ./.github/workflows/test.yaml
-    with:
-      operating_system: windows-latest
+  # test-windows:
+  #   uses: ./.github/workflows/test.yaml
+  #   with:
+  #     operating_system: windows-latest
 
 
   version-check:
-    needs: [test-ubuntu, test-macos, test-windows, set-vars]
+    needs:
+      - test-ubuntu
+      # - test-macos
+      # - test-windows
+      - set-vars
     uses: ./.github/workflows/version-check.yaml
     with:
       python-version: ${{ needs.set-vars.outputs.python-version }}
 
   build-container:
-    needs: [test-ubuntu, set-vars]
+    needs:
+      - test-ubuntu
+      - set-vars
     uses: ./.github/workflows/build-docker.yaml
     with:
       python-version: ${{ needs.set-vars.outputs.python-version }}
 
-  code-analysis:
-    needs: test-ubuntu
-    uses: ./.github/workflows/codeql-analysis.yml
+  # code-analysis:
+  #   needs: test-ubuntu
+  #   uses: ./.github/workflows/codeql-analysis.yml
 
   build-package:
-    needs: [version-check, code-analysis, build-container]
+    needs:
+      - version-check
+      # - code-analysis
+      - build-container
     if: needs.version-check.outputs.run-deploy == 'yes'
     uses: ./.github/workflows/build-package.yaml
     with:
       python-version: ${{ needs.set-vars.outputs.python-version }}
 
   build-changelog:
-    needs: [version-check, build-container]
+    needs:
+      - version-check
+      - build-container
     if: needs.version-check.outputs.run-deploy == 'yes'
     uses: ./.github/workflows/build-changelog.yaml
     with:
       python-version: ${{ needs.set-vars.outputs.python-version }}
 
   release-github:
-    needs: [build-changelog, build-package]
+    needs:
+      - build-changelog
+      - build-package
     uses: ./.github/workflows/release-github.yaml
     if: github.ref_name == needs.set-vars.outputs.main-branch
 
   release-pypi:
-    needs: [build-package]
+    needs:
+      - build-package
     uses: ./.github/workflows/release-pypi.yaml
     with:
       python-version: ${{ needs.set-vars.outputs.python-version }}
