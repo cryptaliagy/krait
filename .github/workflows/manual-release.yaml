@@ -67,13 +67,14 @@ jobs:
   build-package:
     needs:
       - set-vars
+      - map-type
       - code-analysis
       - build-container
     uses: ./.github/workflows/build-package.yaml
     with:
       python-version: ${{ needs.set-vars.outputs.python-version }}
       main-branch: ${{ needs.set-vars.outputs.main-branch }}
-      version-tag: 'rc'
+      version-tag: ${{ needs.map-type.outputs.version-tag }}
 
   release-pypi:
     needs:
