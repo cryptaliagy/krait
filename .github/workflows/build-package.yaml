@@ -25,7 +25,7 @@ jobs:
 
       - name: Set build number if not deploying to main branch
         if: github.ref_name != inputs.main-branch
-        run: echo "$(cat VERSION)-$GITHUB_RUN_NUMBER" > VERSION
+        run: echo "$(cat VERSION).dev$GITHUB_RUN_NUMBER" > VERSION
 
       - name: Install release packages
         run: pip install wheel build
