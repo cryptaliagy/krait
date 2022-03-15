@@ -126,6 +126,7 @@ jobs:
       - set-vars
       - build-package
     uses: ./.github/workflows/release-pypi.yaml
+    if: needs.version-check.outputs.run-deploy == yes || github.ref_name != needs.set-vars.outputs.main-branch
     with:
       python-version: ${{ needs.set-vars.outputs.python-version }}
       deploy-env: ${{ needs.set-vars.outputs.environment }}
