@@ -54,10 +54,10 @@ jobs:
             echo "::set-output name=repo::testpypi"
           fi
 
-  test-ubuntu:
-    uses: ./.github/workflows/test.yaml
-    with:
-      operating_system: ubuntu-latest
+  # test-ubuntu:
+  #   uses: ./.github/workflows/test.yaml
+  #   with:
+  #     operating_system: ubuntu-latest
 
   # test-macos:
   #   uses: ./.github/workflows/test.yaml
@@ -72,7 +72,7 @@ jobs:
 
   version-check:
     needs:
-      - test-ubuntu
+      # - test-ubuntu
       # - test-macos
       # - test-windows
       - set-vars
@@ -137,8 +137,7 @@ jobs:
     with:
       python-version: ${{ needs.set-vars.outputs.python-version }}
       deploy-env: ${{ needs.set-vars.outputs.environment }}
-      deploy-url: |
-        '${{ needs.set-vars.outputs.deploy-url }}${{ needs.build-package.outputs.package-version }}/'
+      deploy-url: "${{ needs.set-vars.outputs.deploy-url }}${{ needs.build-package.outputs.package-version }}/"
       deploy-repo: ${{ needs.set-vars.outputs.deploy-repo }}
     secrets:
       TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
