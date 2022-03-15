@@ -84,8 +84,7 @@ jobs:
     with:
       python-version: ${{ needs.set-vars.outputs.python-version }}
       deploy-env: ${{ needs.set-vars.outputs.environment }}
-      deploy-url: |
-        '${{ needs.set-vars.outputs.deploy-url }}${{ needs.build-package.outputs.package-version }}/'
+      deploy-url: "${{ needs.set-vars.outputs.deploy-url }}${{ needs.build-package.outputs.package-version }}/"
       deploy-repo: ${{ needs.set-vars.outputs.deploy-repo }}
     secrets:
       TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
