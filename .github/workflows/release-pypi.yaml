@@ -38,6 +38,9 @@ jobs:
           name: package-artifacts
           path: dist
 
+      - name: Debug step
+        run: echo '${{ inputs.deploy-repo }}'
+
       - name: Create release
         run: twine upload dist/*
         env:
