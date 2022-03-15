@@ -12,9 +12,9 @@ jobs:
     outputs:
       python-version: '3.9'
       main-branch: 'master'
-      environment: ${{ steps.env.outputs.env }}
-      deploy-url: ${{ steps.url.outputs.url }}
-      deploy-repo: ${{ steps.repo.outputs.repo }}
+      environment: '${{ steps.env.outputs.env }}'
+      deploy-url: '${{ steps.url.outputs.url }}'
+      deploy-repo: '${{ steps.repo.outputs.repo }}'
     steps:
       - name: Set needed elements as outputs
         run: echo "setting up needed elements"
@@ -120,6 +120,8 @@ jobs:
     steps:
       - name: Output deploy-repo
         run: echo "${{ needs.set-vars.outputs.deploy-repo }}"
+      - name: Output python-version
+        run: echo "${{ needs.set-vars.outputs.python-version }}"
 
   release-pypi:
     needs:
