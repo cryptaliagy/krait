@@ -113,6 +113,14 @@ jobs:
   #   uses: ./.github/workflows/release-github.yaml
   #   if: github.ref_name == needs.set-vars.outputs.main-branch
 
+  debug-job:
+    needs:
+      - set-vars
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output deploy-repo
+        run: echo "${{ needs.set-vars.outputs.deploy-repo }}"
+
   release-pypi:
     needs:
       - build-package
