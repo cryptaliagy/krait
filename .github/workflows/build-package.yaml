@@ -6,6 +6,9 @@ on:
       python-version:
         type: string
         required: true
+      main-branch:
+        type: string
+        required: true
 
 
 jobs:
@@ -19,6 +22,10 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ inputs.python-version }}
+
+      - name: Set build number if not deploying to main branch
+        if: github.ref_name != inputs.main-branch
+        run: echo "$(cat VERSION)-$GITHUB_RUN_NUMBER" > VERSION
 
       - name: Install release packages
         run: pip install wheel build

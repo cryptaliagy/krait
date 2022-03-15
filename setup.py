@@ -6,7 +6,7 @@ with open('README.md', 'r') as f:
     long_description = f.read()
 
 with open('VERSION', 'r') as f:
-    version = f.read()
+    version = f.read().strip()
 
 setup(
     name='krait',

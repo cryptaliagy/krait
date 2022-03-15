@@ -3,7 +3,7 @@ name: release_github
 on:
   workflow_call:
     inputs:
-      python_version:
+      python-version:
         required: true
         type: string
       deploy-env:
@@ -18,14 +18,6 @@ on:
 
 
 jobs:
-  debug-job:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Show python_version
-        run: echo ${{ inputs.python_version }}
-
-      - name: Show deploy-env
-        run: echo ${{ inputs.deploy-env }}
   publish:
     runs-on: ubuntu-latest
     environment:
