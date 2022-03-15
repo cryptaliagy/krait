@@ -19,7 +19,7 @@ on:
           The actual version of the package. This is not guaranteed
           to be the same as the version in the repository's VERSION
           file since the output might be a non-standard release (i.e. rc or dev).
-        value: ${{ jobs.build_package.outputs.package-version }}
+        value: ${{ jobs.build-package.outputs.package-version }}
 
 
 jobs:
