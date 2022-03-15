@@ -12,6 +12,13 @@ on:
       deploy-url:
         required: true
         type: string
+    secrets:
+      TWINE_USERNAME:
+        required: true
+      TWINE_PASSWORD:
+        required: true
+      TWINE_REPOSITORY:
+        required: true
 
 
 jobs:

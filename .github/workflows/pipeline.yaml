@@ -96,3 +96,7 @@ jobs:
       python-version: ${{ needs.set-vars.outputs.python-version }}
       deploy-env: ${{ needs.set-vars.outputs.environment }}
       deploy-url: ${{ needs.set-vars.outputs.deploy-url }}
+    secrets:
+      TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+      TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+      TWINE_REPOSITORY: ${{ secrets.TWINE_REPOSITORY }}
