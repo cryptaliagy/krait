@@ -21,14 +21,14 @@ jobs:
           python-version: ${{ inputs.python-version }}
 
       - name: Install release packages
-        run: pip install wheel
+        run: pip install wheel build
 
       - name: Ensure clean dist/ and build/ folders
         run: rm -rf dist build
         continue-on-error: true
 
       - name: Build release
-        run: python setup.py sdist bdist_wheel
+        run: python -m build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
