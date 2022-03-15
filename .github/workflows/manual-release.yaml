@@ -48,6 +48,22 @@ jobs:
     needs: test-ubuntu
     uses: ./.github/workflows/codeql-analysis.yml
 
+  map-type:
+    needs:
+      - set-vars
+    runs-on: ubuntu-latest
+    outputs:
+      version-tag: ${{ steps.mapper.outputs.version-tag }}
+    steps:
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ needs.set-vars.outputs.python-version }}
+
+      - name: Map release type to tag name
+        id: mapper
+        run: |
+          echo "::set-output name=version-tag::$(python scripts/release_type.py ${{ github.events.inputs.release-type }})"
+
   build-package:
     needs:
       - set-vars
