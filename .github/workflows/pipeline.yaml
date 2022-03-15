@@ -125,6 +125,7 @@ jobs:
 
   release-pypi:
     needs:
+      - set-vars
       - build-package
     uses: ./.github/workflows/release-pypi.yaml
     with:
