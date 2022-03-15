@@ -6,14 +6,20 @@ on:
       python-version:
         required: true
         type: string
+      deploy-env:
+        required: true
+        type: string
+      deploy-url:
+        required: true
+        type: string
 
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     environment:
-      name: deployment
-      url: https://pypi.org/project/krait/
+      name: ${{ inputs.deploy-env }}
+      url: ${{ inputs.deploy-url }}
     env:
       TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}

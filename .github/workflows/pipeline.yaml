@@ -7,14 +7,36 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  set-python:
+  set-vars:
     runs-on: ubuntu-latest
     outputs:
       python-version: '3.9'
+      main-branch: 'master'
+      environment: ${{ steps.env.outputs.env }}
+      deploy-url: ${{ steps.url.outputs.url }}
     steps:
       - name: Set needed elements as outputs
         run: echo "setting up needed elements"
 
+      - name: Set environment to use for deployment
+        id: env
+        run: |
+          if [ ${{ github.ref_name }} = 'master']
+          then
+            echo "::set-output name=env::deployment"
+          else
+            echo "::set-output name=env::test-deployment"
+          fi
+
+      - name: Set deploy url
+        id: url
+        run: |
+          if [ ${{ github.ref_name }} = 'master']
+          then
+            echo "::set-output name=url::https://pypi.org/project/krait/"
+          else
+            echo "::set-output name=url::https://test.pypi.org/project/krait/"
+          fi
 
   test-ubuntu:
     uses: ./.github/workflows/test.yaml
@@ -33,17 +55,17 @@ jobs:
 
 
   version-check:
-    needs: [test-ubuntu, test-macos, test-windows, set-python]
+    needs: [test-ubuntu, test-macos, test-windows, set-vars]
     uses: ./.github/workflows/version-check.yaml
     if: github.ref_name == 'master'
     with:
-      python-version: ${{ needs.set-python.outputs.python-version }}
+      python-version: ${{ needs.set-vars.outputs.python-version }}
 
   build-container:
-    needs: [test-ubuntu, set-python]
+    needs: [test-ubuntu, set-vars]
     uses: ./.github/workflows/build-docker.yaml
     with:
-      python-version: ${{ needs.set-python-outputs.python-version }}
+      python-version: ${{ needs.set-vars.outputs.python-version }}
 
   code-analysis:
     needs: test-ubuntu
@@ -54,21 +76,24 @@ jobs:
     if: needs.version-check.outputs.run_deploy == 'yes'
     uses: ./.github/workflows/build-package.yaml
     with:
-      python-version: ${{ needs.set-python-outputs.python-version }}
+      python-version: ${{ needs.set-vars.outputs.python-version }}
 
   build-changelog:
     needs: [version-check, build-container]
     if: needs.version-check.outputs.run_deploy == 'yes'
     uses: ./.github/workflows/build-changelog.yaml
     with:
-      python-version: ${{ needs.set-python-outputs.python-version }}
+      python-version: ${{ needs.set-vars.outputs.python-version }}
 
   release-github:
     needs: [build-changelog, build-package]
     uses: ./.github/workflows/release-github.yaml
+    if: github.ref_name == needs.set-vars.outputs.main-branch
 
   release-pypi:
     needs: [build-package]
     uses: ./.github/workflows/release-pypi.yaml
     with:
-      python-version: ${{ needs.set-python-outputs.python-version }}
+      python-version: ${{ needs.set-vars.outputs.python-version }}
+      deploy-env: ${{ needs.set-vars.outputs.environment }}
+      deploy-url: ${{ needs.set-vars.outputs.deploy-url }}
