@@ -107,6 +107,7 @@ jobs:
     needs:
       - version-check
       - build-container
+      - set-vars
     if: needs.version-check.outputs.run-deploy == 'yes'
     uses: ./.github/workflows/build-changelog.yaml
     with:
@@ -114,6 +115,7 @@ jobs:
 
   release-github:
     needs:
+      - set-vars
       - build-changelog
       - build-package
     uses: ./.github/workflows/release-github.yaml
