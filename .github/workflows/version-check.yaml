@@ -20,6 +20,8 @@ jobs:
       run-deploy: ${{ steps.verify.outputs.run_deploy }}
     steps:
       - uses: actions/checkout@v2
+      - name: Pull tags
+        run: git pull --tags
       - name: Setup python
         uses: actions/setup-python@v2
         with:
