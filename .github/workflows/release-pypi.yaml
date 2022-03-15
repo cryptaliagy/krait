@@ -15,6 +15,11 @@ on:
       deploy-repo:
         required: true
         type: string
+    secrets:
+      TWINE_USERNAME:
+        required: true
+      TWINE_PASSWORD:
+        required: true
 
 
 jobs:
@@ -37,9 +42,6 @@ jobs:
         with:
           name: package-artifacts
           path: dist
-
-      - name: Debug step
-        run: echo '${{ inputs.deploy-repo }}'
 
       - name: Create release
         run: twine upload dist/*
