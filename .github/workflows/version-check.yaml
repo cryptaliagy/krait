@@ -27,3 +27,8 @@ jobs:
       - name: Verify that the version has been increased
         id: verify
         run: echo "::set-output name=run_deploy::$(python scripts/version_verification.py $(python scripts/extract_version.py) $(cat VERSION))"
+
+      - run: |
+          echo "Version in VERSION file: $(cat VERSION)"
+          echo "Last deployed version: $(python scripts/extract_version.py)"
+          echo "Version increased: ${{ steps.verify.outputs.run_deploy }}"
