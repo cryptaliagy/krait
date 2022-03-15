@@ -36,6 +36,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: package-artifacts
+          path: dist
 
       - name: Create release
         run: twine upload dist/*
