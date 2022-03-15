@@ -22,7 +22,7 @@ jobs:
       - name: Set environment to use for deployment
         id: env
         run: |
-          if [ ${{ github.ref_name }} = 'master']
+          if [ '${{ github.ref_name }}' = 'master' ]
           then
             echo "::set-output name=env::deployment"
           else
@@ -32,7 +32,7 @@ jobs:
       - name: Set deploy url
         id: url
         run: |
-          if [ ${{ github.ref_name }} = 'master']
+          if [ '${{ github.ref_name }}' = 'master' ]
           then
             echo "::set-output name=url::https://pypi.org/project/krait/"
           else
@@ -42,8 +42,7 @@ jobs:
       - name: Set deploy repository
         id: repo
         run: |
-
-          if [ ${{ github.ref_name }} = 'master']
+          if [ '${{ github.ref_name }}' = 'master' ]
           then
             echo "::set-output name=repo::pypi"
           else
@@ -98,21 +97,21 @@ jobs:
     with:
       python-version: ${{ needs.set-vars.outputs.python-version }}
 
-  build-changelog:
-    needs:
-      - version-check
-      # - build-container
-    if: needs.version-check.outputs.run-deploy == 'yes'
-    uses: ./.github/workflows/build-changelog.yaml
-    with:
-      python-version: ${{ needs.set-vars.outputs.python-version }}
+  # build-changelog:
+  #   needs:
+  #     - version-check
+  #     - build-container
+  #   if: needs.version-check.outputs.run-deploy == 'yes'
+  #   uses: ./.github/workflows/build-changelog.yaml
+  #   with:
+  #     python-version: ${{ needs.set-vars.outputs.python-version }}
 
-  release-github:
-    needs:
-      - build-changelog
-      - build-package
-    uses: ./.github/workflows/release-github.yaml
-    if: github.ref_name == needs.set-vars.outputs.main-branch
+  # release-github:
+  #   needs:
+  #     - build-changelog
+  #     - build-package
+  #   uses: ./.github/workflows/release-github.yaml
+  #   if: github.ref_name == needs.set-vars.outputs.main-branch
 
   release-pypi:
     needs:
