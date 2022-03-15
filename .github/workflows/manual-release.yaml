@@ -1,0 +1,75 @@
+name: manual-release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release-type:
+        type: choice
+        options:
+        - 'release candidate'
+        - 'alpha'
+        - 'beta'
+        - 'dev'
+        - 'post'
+        description: 'The type of manual deployment. Note, regular deployments cannot be done'
+        required: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  set-vars:
+    runs-on: ubuntu-latest
+    outputs:
+      python-version: '3.9'
+      main-branch: 'master'
+      environment: 'deployment'
+      deploy-url: 'https://pypi.org/project/krait/'
+      deploy-repo: 'pypi'
+    steps:
+      - name: Set needed elements as outputs
+        run: echo "setting up needed elements"
+
+  test-ubuntu:
+    uses: ./.github/workflows/test.yaml
+    with:
+      operating_system: ubuntu-latest
+
+  build-container:
+    needs:
+      - test-ubuntu
+      - set-vars
+    uses: ./.github/workflows/build-docker.yaml
+    with:
+      python-version: ${{ needs.set-vars.outputs.python-version }}
+
+  code-analysis:
+    needs: test-ubuntu
+    uses: ./.github/workflows/codeql-analysis.yml
+
+  build-package:
+    needs:
+      - set-vars
+      - code-analysis
+      - build-container
+    uses: ./.github/workflows/build-package.yaml
+    with:
+      python-version: ${{ needs.set-vars.outputs.python-version }}
+      main-branch: ${{ needs.set-vars.outputs.main-branch }}
+      version-tag: 'rc'
+
+  release-pypi:
+    needs:
+      - set-vars
+      - build-package
+    uses: ./.github/workflows/release-pypi.yaml
+    with:
+      python-version: ${{ needs.set-vars.outputs.python-version }}
+      deploy-env: ${{ needs.set-vars.outputs.environment }}
+      deploy-url: |
+        '${{ needs.set-vars.outputs.deploy-url }}${{ needs.build-package.outputs.package-version }}/'
+      deploy-repo: ${{ needs.set-vars.outputs.deploy-repo }}
+    secrets:
+      TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+      TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}

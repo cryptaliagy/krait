@@ -9,11 +9,24 @@ on:
       main-branch:
         type: string
         required: true
+      version-tag:
+        type: string
+        required: false
+        default: 'dev'
+    outputs:
+      package-version:
+        description: |
+          The actual version of the package. This is not guaranteed
+          to be the same as the version in the repository's VERSION
+          file since the output might be a non-standard release (i.e. rc or dev).
+        value: ${{ jobs.build_package.outputs.package-version }}
 
 
 jobs:
-  build_package:
+  build-package:
     runs-on: ubuntu-latest
+    outputs:
+      package-version: ${{ steps.version.outputs.version }}
     name: Build package artifacts
     steps:
       - uses: actions/checkout@v2
@@ -25,7 +38,8 @@ jobs:
 
       - name: Set build number if not deploying to main branch
         if: github.ref_name != inputs.main-branch
-        run: echo "$(cat VERSION).dev$GITHUB_RUN_NUMBER" > VERSION
+        run: |
+          echo "$(cat VERSION).${{ inputs.version-tag }}$GITHUB_RUN_NUMBER" > VERSION
 
       - name: Install release packages
         run: pip install wheel build
@@ -44,3 +58,7 @@ jobs:
           path: |
             dist/*.tar.gz
             dist/*.whl
+
+      - name: Set output to actual version used
+        id: version
+        run: echo "::set-output name=version::$(cat VERSION)"
