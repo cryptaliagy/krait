@@ -6,7 +6,7 @@ with open('README.md', 'r') as f:
     long_description = f.read()
 
 with open('VERSION', 'r') as f:
-    version = f.read()
+    version = f.read().strip()
 
 setup(
     name='krait',
@@ -36,6 +36,7 @@ setup(
         'krait.project_frameworks': [
             'click = krait.lib.plugins.project_frameworks:ClickFramework',
             'library = krait.lib.plugins.project_frameworks:LibraryProject',
+            'flask = krait.lib.plugins.project_frameworks:FlaskProject',
         ],
         'krait.linters': [
             'flake8 = krait.lib.plugins.linters:Flake8',

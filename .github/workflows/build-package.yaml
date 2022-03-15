@@ -6,11 +6,27 @@ on:
       python-version:
         type: string
         required: true
+      main-branch:
+        type: string
+        required: true
+      version-tag:
+        type: string
+        required: false
+        default: 'dev'
+    outputs:
+      package-version:
+        description: |
+          The actual version of the package. This is not guaranteed
+          to be the same as the version in the repository's VERSION
+          file since the output might be a non-standard release (i.e. rc or dev).
+        value: ${{ jobs.build-package.outputs.package-version }}
 
 
 jobs:
-  build_package:
+  build-package:
     runs-on: ubuntu-latest
+    outputs:
+      package-version: ${{ steps.version.outputs.version }}
     name: Build package artifacts
     steps:
       - uses: actions/checkout@v2
@@ -20,15 +36,20 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
 
+      - name: Set build number if not deploying to main branch
+        if: github.ref_name != inputs.main-branch
+        run: |
+          echo "$(cat VERSION).${{ inputs.version-tag }}$GITHUB_RUN_NUMBER" > VERSION
+
       - name: Install release packages
-        run: pip install wheel
+        run: pip install wheel build
 
       - name: Ensure clean dist/ and build/ folders
         run: rm -rf dist build
         continue-on-error: true
 
       - name: Build release
-        run: python setup.py sdist bdist_wheel
+        run: python -m build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
@@ -37,3 +58,7 @@ jobs:
           path: |
             dist/*.tar.gz
             dist/*.whl
+
+      - name: Set output to actual version used
+        id: version
+        run: echo "::set-output name=version::$(cat VERSION)"

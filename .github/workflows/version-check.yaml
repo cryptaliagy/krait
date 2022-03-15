@@ -6,6 +6,10 @@ on:
       python-version:
         required: true
         type: string
+    outputs:
+      run-deploy:
+        description: 'Whether or not the deployment should execute'
+        value: ${{ jobs.version-check.outputs.run-deploy }}
 
 
 jobs:
@@ -13,9 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     name: Verify version has been increased
     outputs:
-      run_deploy: ${{ steps.verify.outputs.run_deploy }}
+      run-deploy: ${{ steps.verify.outputs.run_deploy }}
     steps:
       - uses: actions/checkout@v2
+      - name: Pull tags
+        run: git pull --tags
       - name: Setup python
         uses: actions/setup-python@v2
         with:
@@ -26,4 +32,9 @@ jobs:
 
       - name: Verify that the version has been increased
         id: verify
-        run: echo "::set-output name=run_deploy::$(python scripts/version_verification.py $(python scripts/extract_version.py) $(cat VERSION))"
+        run: echo "::set-output name=run_deploy::$(python scripts/version_verification.py $(git tag -l | tail -1) $(cat VERSION))"
+
+      - run: |
+          echo "Version in VERSION file: $(cat VERSION)"
+          echo "Last deployed version: $(git tag -l | tail -1)"
+          echo "Version increased: ${{ steps.verify.outputs.run_deploy }}"

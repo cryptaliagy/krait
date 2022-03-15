@@ -1,0 +1,40 @@
+import pytest
+
+from {{ project_name|replace('-', '_') }}.app import (
+    create_app
+)
+
+
+# Fixtures
+
+@pytest.fixture()
+def app():
+    app = create_app()
+    app.config.update({
+        'TESTING': True,
+    })
+
+    yield app
+
+
+@pytest.fixture()
+def client(app):
+    return app.test_client()
+
+# Tests
+
+
+def test_heartbeat_route(client):
+    response = client.get('/heartbeat')
+
+    json = response.json
+
+    assert json['ok'] is True
+
+
+def test_api_heartbeat_route(client):
+    response = client.get('/api/heartbeat')
+
+    json = response.json
+
+    assert json['ok'] is True

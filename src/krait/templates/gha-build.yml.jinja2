@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ['3.6', '3.7', '3.8', '3.9']
+        python: ['3.7', '3.8', '3.9', '3.10']
     name: Testing {{ project_name }} with python {% raw -%} ${{ matrix.python }} {%- endraw %}
     steps:
       - uses: actions/checkout@v2
@@ -17,7 +17,7 @@ jobs:
           python-version: {% raw -%} ${{ matrix.python }} {%- endraw %}
 
       - name: Install dependencies and script
-        run: pip install .[tests]
+        run: pip install .[all]
       {% if linter == 'flake8' %}
       - name: Lint with flake8
         run: flake8

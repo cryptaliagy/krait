@@ -1,0 +1,12 @@
+from {{ project_name|replace('-', '_') }}.routes.root import (
+    root
+)
+
+from {{ project_name|replace('-', '_') }}.routes.api import (
+    api
+)
+
+# To add a new route group (i.e. /user), import the blueprint
+# above and register it with the root blueprint.
+
+root.register_blueprint(api)

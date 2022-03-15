@@ -1,0 +1,15 @@
+FROM python:{{ version }}-slim
+
+WORKDIR /app
+
+COPY requirements.txt /app
+
+RUN pip install -r requirements.txt \
+    && apt update \
+    && apt install curl -y
+
+COPY . /app
+
+RUN pip install -e .
+
+CMD ./scripts/run.sh

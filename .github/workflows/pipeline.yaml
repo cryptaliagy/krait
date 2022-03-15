@@ -1,20 +1,58 @@
 name: pipeline
 
-on: [push]
+on:
+  push:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  set-python:
+  set-vars:
     runs-on: ubuntu-latest
     outputs:
       python-version: '3.9'
+      main-branch: '${{ steps.branch.output.branch }}'
+      environment: '${{ steps.env.outputs.env }}'
+      deploy-url: '${{ steps.url.outputs.url }}'
+      deploy-repo: '${{ steps.repo.outputs.repo }}'
     steps:
       - name: Set needed elements as outputs
         run: echo "setting up needed elements"
 
+      - name: Set the main branch name
+        id: branch
+        run: echo "::set-output name=branch::master"
+
+      - name: Set environment to use for deployment
+        id: env
+        run: |
+          if [ '${{ github.ref_name }}' = '${{ steps.branch.output.branch }}' ]
+          then
+            echo "::set-output name=env::deployment"
+          else
+            echo "::set-output name=env::test-deployment"
+          fi
+
+      - name: Set deploy url
+        id: url
+        run: |
+          if [ '${{ github.ref_name }}' = '${{ steps.branch.output.branch }}' ]
+          then
+            echo "::set-output name=url::https://pypi.org/project/krait/"
+          else
+            echo "::set-output name=url::https://test.pypi.org/project/krait/"
+          fi
+
+      - name: Set deploy repository
+        id: repo
+        run: |
+          if [ '${{ github.ref_name }}' = '${{ steps.branch.output.branch }}' ]
+          then
+            echo "::set-output name=repo::pypi"
+          else
+            echo "::set-output name=repo::testpypi"
+          fi
 
   test-ubuntu:
     uses: ./.github/workflows/test.yaml
@@ -33,36 +71,66 @@ jobs:
 
 
   version-check:
-    needs: [test-ubuntu, test-macos, test-windows, set-python]
+    needs:
+      - test-ubuntu
+      - test-macos
+      - test-windows
+      - set-vars
     uses: ./.github/workflows/version-check.yaml
-    if: github.ref_name == 'master'
     with:
-      python-version: ${{ needs.set-python.outputs.python-version }}
+      python-version: ${{ needs.set-vars.outputs.python-version }}
+
+  build-container:
+    needs:
+      - test-ubuntu
+      - set-vars
+    uses: ./.github/workflows/build-docker.yaml
+    with:
+      python-version: ${{ needs.set-vars.outputs.python-version }}
 
   code-analysis:
     needs: test-ubuntu
     uses: ./.github/workflows/codeql-analysis.yml
 
   build-package:
-    needs: [version-check, code-analysis]
-    if: needs.version-check.outputs.run_deploy == 'yes'
+    needs:
+      - version-check
+      - set-vars
+      - code-analysis
+      - build-container
     uses: ./.github/workflows/build-package.yaml
     with:
-      python-version: ${{ needs.set-python-outputs.python-version }}
+      python-version: ${{ needs.set-vars.outputs.python-version }}
+      main-branch: ${{ needs.set-vars.outputs.main-branch }}
 
   build-changelog:
-    needs: [version-check]
-    if: needs.version-check.outputs.run_deploy == 'yes'
+    needs:
+      - version-check
+      - build-container
+      - set-vars
+    if: needs.version-check.outputs.run-deploy == 'yes'
     uses: ./.github/workflows/build-changelog.yaml
     with:
-      python-version: ${{ needs.set-python-outputs.python-version }}
+      python-version: ${{ needs.set-vars.outputs.python-version }}
 
   release-github:
-    needs: [build-changelog, build-package]
+    needs:
+      - set-vars
+      - build-changelog
+      - build-package
     uses: ./.github/workflows/release-github.yaml
+    if: github.ref_name == needs.set-vars.outputs.main-branch
 
   release-pypi:
-    needs: [build-package]
+    needs:
+      - set-vars
+      - build-package
     uses: ./.github/workflows/release-pypi.yaml
     with:
-      python-version: ${{ needs.set-python-outputs.python-version }}
+      python-version: ${{ needs.set-vars.outputs.python-version }}
+      deploy-env: ${{ needs.set-vars.outputs.environment }}
+      deploy-url: "${{ needs.set-vars.outputs.deploy-url }}${{ needs.build-package.outputs.package-version }}/"
+      deploy-repo: ${{ needs.set-vars.outputs.deploy-repo }}
+    secrets:
+      TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+      TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}

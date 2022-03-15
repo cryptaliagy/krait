@@ -100,7 +100,46 @@ expected_files_for_config: Dict[str, List[str]] = {
         '!tests/lib_test.py',
         '!tests/cli_test.py',
         '!.github/workflows/build.yml',
-    ]
+    ],
+    '-a none -p flask -t none -l none -c none': [
+        'src/project/__init__.py',
+        'src/project/app.py',
+        'src/project/config.py',
+        'src/project/routes/__init__.py',
+        'src/project/routes/root.py',
+        'src/project/routes/api.py',
+        'docker/Dockerfile',
+        'docker/docker-compose.yaml',
+        '!tests/__init__.py',
+        '!tests/app_test.py',
+        '!.github/workflows/build.yml',
+    ],
+    '-a gha -p flask -t none -l none -c none': [
+        'src/project/__init__.py',
+        'src/project/app.py',
+        'src/project/config.py',
+        'src/project/routes/__init__.py',
+        'src/project/routes/root.py',
+        'src/project/routes/api.py',
+        'docker/Dockerfile',
+        'docker/docker-compose.yaml',
+        '!tests/__init__.py',
+        '!tests/app_test.py',
+        '.github/workflows/build.yml',
+    ],
+    '-a gha -p flask -t pytest -l none -c none': [
+        'src/project/__init__.py',
+        'src/project/app.py',
+        'src/project/config.py',
+        'src/project/routes/__init__.py',
+        'src/project/routes/root.py',
+        'src/project/routes/api.py',
+        'docker/Dockerfile',
+        'docker/docker-compose.yaml',
+        'tests/__init__.py',
+        'tests/app_test.py',
+        '.github/workflows/build.yml',
+    ],
 }
 
 
@@ -144,9 +183,9 @@ def test_cli_create(mock_configs, mock_update, mock_templates, cmd: str):
 
 
 makefile_sections: Dict[str, str] = {
-    'pytest': '.PHONY: test\ntest :\n\tpytest',
-    'flake8': '.PHONY: lint fmt\nlint :\n\tflake8',
-    'mypy': '.PHONY: check\ncheck :\n\tmypy',
+    'pytest': '.PHONY: test\ntest:  ## Runs the test suite\n\tpytest',
+    'flake8': '.PHONY: lint fmt\nlint:  ## Runs the linter\n\tflake8',
+    'mypy': '.PHONY: check\ncheck:  ## Runs the static type checker\n\tmypy',
 }
 
 expected_makefile_sections: Dict[str, List[str]] = {

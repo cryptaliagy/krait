@@ -5,6 +5,7 @@ from typing import (
     Dict,
 )
 from pathlib import Path
+import stat
 
 import krait.lib.abc as abc
 
@@ -60,8 +61,15 @@ class FileRenderer(abc.AbstractFileRenderer):
     def write_all(self, purge: bool = True):
         for file in self.files.values():
             self.output(f'Writing {self.root}/{file.path}...')
+            contents = file.contents
+            if len(contents) > 0 and contents[-1] != '\n':
+                contents += '\n'
             with open(self.root / file.path, 'w') as f:
-                f.write(file.contents)
+                f.write(contents)
+                if file.executable:
+                    path = Path(f.name)
+                    st = path.stat()
+                    path.chmod(st.st_mode | stat.S_IEXEC)
 
         if purge:
             self.files = {}
