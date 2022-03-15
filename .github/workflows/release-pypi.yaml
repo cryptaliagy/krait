@@ -1,4 +1,4 @@
-name: release_github
+name: release_pypi
 
 on:
   workflow_call:
