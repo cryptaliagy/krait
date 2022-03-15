@@ -13,10 +13,10 @@ jobs:
     strategy:
       matrix:
         python:
-          # - '3.7'
-          # - '3.8'
+          - '3.7'
+          - '3.8'
           - '3.9'
-          # - '3.10'
+          - '3.10'
     name: Testing ${{ github.repository }} with Python ${{ matrix.python }} on ${{ inputs.operating_system }}
     steps:
       - uses: actions/checkout@v2
