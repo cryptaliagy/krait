@@ -14,6 +14,7 @@ jobs:
       main-branch: 'master'
       environment: ${{ steps.env.outputs.env }}
       deploy-url: ${{ steps.url.outputs.url }}
+      deploy-repo: ${{ steps.repo.outputs.repo }}
     steps:
       - name: Set needed elements as outputs
         run: echo "setting up needed elements"
@@ -36,6 +37,17 @@ jobs:
             echo "::set-output name=url::https://pypi.org/project/krait/"
           else
             echo "::set-output name=url::https://test.pypi.org/project/krait/"
+          fi
+
+      - name: Set deploy repository
+        id: repo
+        run: |
+
+          if [ ${{ github.ref_name }} = 'master']
+          then
+            echo "::set-output name=repo::pypi"
+          else
+            echo "::set-output name=repo::testpypi"
           fi
 
   test-ubuntu:
@@ -96,7 +108,7 @@ jobs:
       python-version: ${{ needs.set-vars.outputs.python-version }}
       deploy-env: ${{ needs.set-vars.outputs.environment }}
       deploy-url: ${{ needs.set-vars.outputs.deploy-url }}
+      deploy-repo: ${{ needs.set-vars.outputs.deploy-repo }}
     secrets:
       TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-      TWINE_REPOSITORY: ${{ secrets.TWINE_REPOSITORY }}

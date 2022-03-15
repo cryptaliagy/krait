@@ -12,12 +12,13 @@ on:
       deploy-url:
         required: true
         type: string
+      deploy-repo:
+        required: true
+        type: string
     secrets:
       TWINE_USERNAME:
         required: true
       TWINE_PASSWORD:
-        required: true
-      TWINE_REPOSITORY:
         required: true
 
 
@@ -27,10 +28,6 @@ jobs:
     environment:
       name: ${{ inputs.deploy-env }}
       url: ${{ inputs.deploy-url }}
-    env:
-      TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-      TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-      TWINE_REPOSITORY: ${{ secrets.TWINE_REPOSITORY }}
     steps:
       - name: Setup python
         uses: actions/setup-python@v2
@@ -48,3 +45,7 @@ jobs:
 
       - name: Create release
         run: twine upload dist/*
+        env:
+          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+          TWINE_REPOSITORY: ${{ inputs.deploy-repo }}
