@@ -72,14 +72,14 @@ jobs:
 
   build-package:
     needs: [version-check, code-analysis, build-container]
-    if: needs.version-check.outputs.run_deploy == 'yes'
+    if: needs.version-check.outputs.run-deploy == 'yes'
     uses: ./.github/workflows/build-package.yaml
     with:
       python-version: ${{ needs.set-vars.outputs.python-version }}
 
   build-changelog:
     needs: [version-check, build-container]
-    if: needs.version-check.outputs.run_deploy == 'yes'
+    if: needs.version-check.outputs.run-deploy == 'yes'
     uses: ./.github/workflows/build-changelog.yaml
     with:
       python-version: ${{ needs.set-vars.outputs.python-version }}

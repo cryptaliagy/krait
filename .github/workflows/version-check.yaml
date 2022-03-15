@@ -6,6 +6,10 @@ on:
       python-version:
         required: true
         type: string
+    outputs:
+      run-deploy:
+        description: 'Whether or not the deployment should execute'
+        value: ${{ jobs.version-check.outputs.run-deploy }}
 
 
 jobs:
@@ -13,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Verify version has been increased
     outputs:
-      run_deploy: ${{ steps.verify.outputs.run_deploy }}
+      run-deploy: ${{ steps.verify.outputs.run_deploy }}
     steps:
       - uses: actions/checkout@v2
       - name: Setup python
