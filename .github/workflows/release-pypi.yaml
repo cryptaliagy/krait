@@ -15,11 +15,6 @@ on:
       deploy-repo:
         required: true
         type: string
-    secrets:
-      TWINE_USERNAME:
-        required: true
-      TWINE_PASSWORD:
-        required: true
 
 
 jobs:

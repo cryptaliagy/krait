@@ -109,6 +109,3 @@ jobs:
       deploy-env: ${{ needs.set-vars.outputs.environment }}
       deploy-url: ${{ needs.set-vars.outputs.deploy-url }}
       deploy-repo: ${{ needs.set-vars.outputs.deploy-repo }}
-    secrets:
-      TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-      TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
