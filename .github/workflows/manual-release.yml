@@ -55,6 +55,7 @@ jobs:
     outputs:
       version-tag: ${{ steps.mapper.outputs.version-tag }}
     steps:
+      - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ needs.set-vars.outputs.python-version }}
