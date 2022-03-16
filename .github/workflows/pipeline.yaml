@@ -12,47 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       python-version: '3.9'
-      main-branch: '${{ steps.branch.output.branch }}'
-      environment: '${{ steps.env.outputs.env }}'
-      deploy-url: '${{ steps.url.outputs.url }}'
-      deploy-repo: '${{ steps.repo.outputs.repo }}'
+      main-branch: 'master'
+      environment: 'deployment'
+      deploy-url: 'https://pypi.org/project/krait'
+      deploy-repo: 'pypi'
     steps:
       - name: Set needed elements as outputs
         run: echo "setting up needed elements"
-
-      - name: Set the main branch name
-        id: branch
-        run: echo "::set-output name=branch::master"
-
-      - name: Set environment to use for deployment
-        id: env
-        run: |
-          if [ '${{ github.ref_name }}' = '${{ steps.branch.output.branch }}' ]
-          then
-            echo "::set-output name=env::deployment"
-          else
-            echo "::set-output name=env::test-deployment"
-          fi
-
-      - name: Set deploy url
-        id: url
-        run: |
-          if [ '${{ github.ref_name }}' = '${{ steps.branch.output.branch }}' ]
-          then
-            echo "::set-output name=url::https://pypi.org/project/krait/"
-          else
-            echo "::set-output name=url::https://test.pypi.org/project/krait/"
-          fi
-
-      - name: Set deploy repository
-        id: repo
-        run: |
-          if [ '${{ github.ref_name }}' = '${{ steps.branch.output.branch }}' ]
-          then
-            echo "::set-output name=repo::pypi"
-          else
-            echo "::set-output name=repo::testpypi"
-          fi
 
   test-ubuntu:
     uses: ./.github/workflows/test.yaml
@@ -77,6 +43,7 @@ jobs:
       - test-windows
       - set-vars
     uses: ./.github/workflows/version-check.yaml
+    if: github.ref_name == needs.set-vars.outputs.main-branch
     with:
       python-version: ${{ needs.set-vars.outputs.python-version }}
 
@@ -119,14 +86,12 @@ jobs:
       - build-changelog
       - build-package
     uses: ./.github/workflows/release-github.yaml
-    if: github.ref_name == needs.set-vars.outputs.main-branch
 
   release-pypi:
     needs:
       - set-vars
       - build-package
     uses: ./.github/workflows/release-pypi.yaml
-    if: needs.version-check.outputs.run-deploy == 'yes' || github.ref_name != needs.set-vars.outputs.main-branch
     with:
       python-version: ${{ needs.set-vars.outputs.python-version }}
       deploy-env: ${{ needs.set-vars.outputs.environment }}
