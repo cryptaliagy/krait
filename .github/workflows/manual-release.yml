@@ -32,7 +32,7 @@ jobs:
         run: echo "setting up needed elements"
 
       - name: Output selection
-        run: echo "${{ github.events.inputs.release-type }}""
+        run: echo "${{ github.event.inputs.release-type }}"
 
   test-ubuntu:
     uses: ./.github/workflows/test.yaml
