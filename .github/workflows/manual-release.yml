@@ -31,6 +31,9 @@ jobs:
       - name: Set needed elements as outputs
         run: echo "setting up needed elements"
 
+      - name: Output selection
+        run: echo "${{ github.event.inputs.release-type }}"
+
   test-ubuntu:
     uses: ./.github/workflows/test.yaml
     with:
@@ -63,7 +66,7 @@ jobs:
       - name: Map release type to tag name
         id: mapper
         run: |
-          echo "::set-output name=version-tag::$(python scripts/release_type.py ${{ github.events.inputs.release-type }})"
+          echo "::set-output name=version-tag::$(python scripts/release_type.py '${{ github.event.inputs.release-type }}')"
 
   build-package:
     needs:
